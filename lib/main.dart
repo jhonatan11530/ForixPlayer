@@ -24,10 +24,10 @@ class _ForixPlayerState extends State<ForixPlayer> {
     return MaterialApp(
       theme: new ThemeData(scaffoldBackgroundColor: _colorAplicacion[2]),
       home: Scaffold(
-        appBar: AppBar(
+        /*appBar: AppBar(
           title: const Text('Forix Multimedia'),
           backgroundColor: _colorAplicacion[0],
-        ),
+        ),*/
         body: _pages[_selectedIndex],
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: _colorAplicacion[1],

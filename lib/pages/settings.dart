@@ -19,19 +19,22 @@ class _SettingsState extends State<Settings> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          child: Row(children: [
-            SizedBox(height: 50, width: 10),
-            Icon(
-              Icons.settings,
-              color: Colors.blue,
-              size: 35,
+        Flexible(
+          child: Container(
+            padding: new EdgeInsets.symmetric(horizontal: 0, vertical: 40),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.settings,
+                  color: Colors.blue,
+                  size: 35,
+                ),
+                Text("Configuracion",
+                    style:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              ],
             ),
-            SizedBox(width: 10),
-            Text("Configuracion",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            Divider(height: 20, thickness: 1),
-          ]),
+          ),
         ),
         Expanded(
           child: ListView.builder(
