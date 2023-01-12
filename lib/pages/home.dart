@@ -20,22 +20,28 @@ class _HomeState extends State<Home> {
     return Container(
       child: Column(
         children: [
-          Padding(
-            padding: new EdgeInsets.symmetric(horizontal: 0, vertical: 40),
-            child: Row(
-              children: [
-                Padding(padding: EdgeInsets.all(15)),
-                Text(
-                  "Tu Musica",
-                  style: TextStyle(
-                      fontSize: 35,
-                      color: Colors.blue,
-                      fontWeight: FontWeight.bold),
-                )
-              ],
+          Container(
+            width: double.infinity,
+            height: 120,
+            child: Padding(
+              padding: new EdgeInsets.symmetric(horizontal: 0, vertical: 40),
+              child: Row(
+                children: [
+                  Padding(padding: EdgeInsets.all(15)),
+                  Text(
+                    "Tu Musica",
+                    style: TextStyle(
+                        fontSize: 40,
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold),
+                  )
+                ],
+              ),
             ),
           ),
-          Flexible(
+          Container(
+            width: double.infinity,
+            height: 150,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.all(10),
@@ -48,14 +54,25 @@ class _HomeState extends State<Home> {
               },
             ),
           ),
-          Expanded(
-            child: Text("data"),
+          SizedBox(
+            height: 10,
           ),
           Expanded(
-            child: Row(
-              children: [
-                Text("data"),
-              ],
+            child: ListView.builder(
+              itemCount: 10,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text("Titulo Musica"),
+                  subtitle: Text("Sub titulo"),
+                  leading: CircleAvatar(
+                    radius: 20,
+                    backgroundColor: Colors.transparent,
+                    backgroundImage: NetworkImage(
+                        "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg"),
+                  ),
+                  onTap: () {},
+                );
+              },
             ),
           ),
         ],
@@ -68,14 +85,14 @@ class _HomeState extends State<Home> {
           children: [
             Expanded(
               child: AspectRatio(
-                aspectRatio: 2 / 2.7,
+                aspectRatio: 4 / 4,
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Material(
                       child: Ink.image(
                         image: NetworkImage(_Image[index]),
                         fit: BoxFit.cover,
-                        width: 136,
+                        width: 150,
                         height: 150,
                         child: InkWell(
                           onTap: () {
