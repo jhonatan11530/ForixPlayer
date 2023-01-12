@@ -17,65 +17,74 @@ class _HomeState extends State<Home> {
   ];
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            height: 120,
-            child: Padding(
-              padding: new EdgeInsets.symmetric(horizontal: 0, vertical: 40),
-              child: Row(
-                children: [
-                  Padding(padding: EdgeInsets.all(15)),
-                  Text(
-                    "Tu Musica",
-                    style: TextStyle(
-                        fontSize: 40,
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold),
-                  )
-                ],
-              ),
-            ),
-          ),
-          Container(
-            width: double.infinity,
-            height: 150,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.all(10),
-              itemCount: _Image.length,
-              separatorBuilder: (context, index) => SizedBox(
-                width: 12,
-              ),
-              itemBuilder: (context, index) {
-                return buildCard(context, index);
-              },
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: 10,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text("Titulo Musica"),
-                  subtitle: Text("Sub titulo"),
-                  leading: CircleAvatar(
-                    radius: 20,
-                    backgroundColor: Colors.transparent,
-                    backgroundImage: NetworkImage(
-                        "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg"),
+    return MaterialApp(
+      home: Scaffold(
+        body: Container(
+          child: Column(
+            children: [
+              Container(
+                width: double.infinity,
+                height: 120,
+                child: Padding(
+                  padding:
+                      new EdgeInsets.symmetric(horizontal: 0, vertical: 40),
+                  child: Row(
+                    children: [
+                      Padding(padding: EdgeInsets.all(15)),
+                      Text(
+                        "Tu Musica",
+                        style: TextStyle(
+                            fontSize: 40,
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
-                  onTap: () {},
-                );
-              },
-            ),
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                height: 150,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.all(10),
+                  itemCount: _Image.length,
+                  separatorBuilder: (context, index) => SizedBox(
+                    width: 12,
+                  ),
+                  itemBuilder: (context, index) {
+                    return buildCard(context, index);
+                  },
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: 10,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text("Titulo Musica"),
+                      subtitle: Text("Sub titulo"),
+                      leading: CircleAvatar(
+                        radius: 20,
+                        backgroundColor: Colors.transparent,
+                        backgroundImage: NetworkImage(
+                            "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg"),
+                      ),
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => Music(),
+                        ));
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

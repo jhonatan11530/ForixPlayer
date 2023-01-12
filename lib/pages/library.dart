@@ -10,8 +10,12 @@ class Biblioteca extends StatefulWidget {
 class _BibliotecaState extends State<Biblioteca> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text("data #2"),
+    return MaterialApp(
+      home: Scaffold(
+        body: Container(
+          child: Text("data #2"),
+        ),
+      ),
     );
   }
 }

@@ -15,27 +15,52 @@ class ForixPlayer extends StatefulWidget {
 }
 
 class _ForixPlayerState extends State<ForixPlayer> {
-  int _selectedIndex = 0;
-  List<Widget> _pages = [Home(), Biblioteca(), Settings()];
   // primary color nabvar - second color footer - tree color theme body
   List<Color> _colorAplicacion = [Colors.blue, Colors.blue, Colors.white];
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: new ThemeData(scaffoldBackgroundColor: _colorAplicacion[2]),
       home: Scaffold(
-        /*appBar: AppBar(
-          title: const Text('Forix Multimedia'),
-          backgroundColor: _colorAplicacion[0],
-        ),*/
-        body: _pages[_selectedIndex],
+        bottomNavigationBar: MyNavigationBar(),
+      ),
+    );
+  }
+}
+
+class NavBarButton {
+  int _selectedIndex = 0;
+  List<Widget> _pages = [Home(), Biblioteca(), Settings()];
+}
+
+NavBarButton NavBar = new NavBarButton();
+ValueNotifier<int> buttonClickedTimes = ValueNotifier(0);
+
+class MyNavigationBar extends StatefulWidget {
+  const MyNavigationBar({super.key});
+
+  @override
+  State<MyNavigationBar> createState() => _MyNavigationBarState();
+}
+
+class _MyNavigationBarState extends State<MyNavigationBar> {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: ValueListenableBuilder(
+          valueListenable: buttonClickedTimes,
+          builder: (context, value, child) {
+            return NavBar._pages[value];
+          },
+        ),
         bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: _colorAplicacion[1],
-          currentIndex: _selectedIndex,
+          backgroundColor: Colors.blue,
+          currentIndex: NavBar._selectedIndex,
           selectedItemColor: Colors.white,
           onTap: (value) {
             setState(() {
-              _selectedIndex = value;
+              NavBar._selectedIndex = value;
+              buttonClickedTimes.value = value;
             });
           },
           items: [

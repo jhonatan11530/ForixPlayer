@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:forixplayer/main.dart';
 
-class Music extends StatefulWidget {
+class Music extends StatelessWidget {
   const Music({super.key});
 
   @override
-  State<Music> createState() => _MusicState();
-}
-
-class _MusicState extends State<Music> {
-  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(appBar: AppBar(
-        
-        leading: Icon(Icons.keyboard_arrow_down),
-          title: const Text('Forix Multimedia'),
-          backgroundColor: Colors.amber,
-        ),
-        ),
+    return Scaffold(
+      body: const Center(
+        child: Text('Press the button with a label below!'),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        label: const Text('Atras'),
+        icon: const Icon(Icons.arrow_back),
+        backgroundColor: Colors.blue,
+      ),
     );
   }
 }
