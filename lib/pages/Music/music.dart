@@ -9,6 +9,8 @@ class Music extends StatefulWidget {
 }
 
 class _MusicState extends State<Music> {
+  double _value = 0;
+  bool iconChange = false;
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -39,22 +41,21 @@ class _MusicState extends State<Music> {
               ),
             ),
             Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: AudioControl(),
+              child: Slider(
+                value: _value,
+                min: 0,
+                max: 100,
+                onChanged: (value) {
+                  setState(() {
+                    _value = value;
+                  });
+                },
               ),
             ),
             Container(
-              width: 350,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Slider(
-                    value: 0,
-                    max: 100,
-                    onChanged: (value) {},
-                  ),
-                ],
+                children: AudioControl(),
               ),
             ),
           ],
@@ -90,9 +91,24 @@ class _MusicState extends State<Music> {
 
   List<Widget> AudioControl() {
     return <Widget>[
-      IconButton(iconSize: 50, onPressed: () {}, icon: Icon(Icons.home)),
-      IconButton(iconSize: 100, onPressed: () {}, icon: Icon(Icons.play_arrow)),
-      IconButton(iconSize: 50, onPressed: () {}, icon: Icon(Icons.home)),
+      IconButton(
+          iconSize: 50,
+          onPressed: () {},
+          icon: Icon(Icons.keyboard_double_arrow_left)),
+      IconButton(
+        iconSize: 100,
+        onPressed: () {
+          setState(() {
+            iconChange = !iconChange;
+          });
+        },
+        icon:
+            Icon((iconChange == false) ? Icons.play_arrow : Icons.pause_sharp),
+      ),
+      IconButton(
+          iconSize: 50,
+          onPressed: () {},
+          icon: Icon(Icons.keyboard_double_arrow_right)),
     ];
   }
 }
