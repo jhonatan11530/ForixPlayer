@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:marquee/marquee.dart';
 
-class Music extends StatelessWidget {
+class Music extends StatefulWidget {
   const Music({super.key});
 
+  @override
+  State<Music> createState() => _MusicState();
+}
+
+class _MusicState extends State<Music> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -10,32 +16,44 @@ class Music extends StatelessWidget {
       home: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,
-          leading: Icon(Icons.keyboard_arrow_down_sharp),
+          leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(Icons.keyboard_arrow_down_sharp)),
           elevation: 0,
           title: Text('Press the button with a label below!'),
         ),
         body: Column(
           children: [
             Container(
-              padding: const EdgeInsets.all(35),
+              padding: const EdgeInsets.all(30),
               child: Image.network(
                   "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg"),
             ),
             Container(
               width: 300,
-              child: Text("[ Megurine Luka ] Dreamin Chu Chu — sub español",
-                  overflow: TextOverflow.ellipsis,
-                  
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+              height: 30,
+              child: Expanded(
+                child: _buildComplexMarquee(),
+              ),
             ),
-            
             Container(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
+                children: AudioControl(),
+              ),
+            ),
+            Container(
+              width: 350,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.home),
-                  Text("data"),
-                  Icon(Icons.home),
+                  Slider(
+                    value: 0,
+                    max: 100,
+                    onChanged: (value) {},
+                  ),
                 ],
               ),
             ),
@@ -51,5 +69,30 @@ class Music extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildComplexMarquee() {
+    return Marquee(
+      text: '[ Megurine Luka ] Dreamin Chu Chu',
+      style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+      scrollAxis: Axis.horizontal,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      blankSpace: 20.0,
+      velocity: 50.0,
+      pauseAfterRound: Duration(seconds: 5),
+      startPadding: 0,
+      accelerationDuration: Duration(seconds: 1),
+      accelerationCurve: Curves.linear,
+      decelerationDuration: Duration(milliseconds: 500),
+      decelerationCurve: Curves.easeOut,
+    );
+  }
+
+  List<Widget> AudioControl() {
+    return <Widget>[
+      IconButton(iconSize: 50, onPressed: () {}, icon: Icon(Icons.home)),
+      IconButton(iconSize: 100, onPressed: () {}, icon: Icon(Icons.play_arrow)),
+      IconButton(iconSize: 50, onPressed: () {}, icon: Icon(Icons.home)),
+    ];
   }
 }
