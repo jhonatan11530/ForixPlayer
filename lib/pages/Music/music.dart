@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:marquee/marquee.dart';
+import 'package:just_audio/just_audio.dart';
 
 class Music extends StatefulWidget {
   const Music({super.key});
@@ -9,8 +10,35 @@ class Music extends StatefulWidget {
 }
 
 class _MusicState extends State<Music> {
-  double _value = 0;
   bool iconChange = false;
+  Duration duration = Duration.zero;
+  Duration position = Duration.zero;
+  final advancedPlayer = AudioPlayer();
+
+  @override
+  void initState() {
+    super.initState();
+    _musicInit();
+  }
+
+  _musicInit() async {
+    await advancedPlayer.setAsset("assets/audio.mp3");
+
+    advancedPlayer.positionStream.listen((Duration p) {
+      setState(() => position = p);
+    });
+    
+    advancedPlayer.durationStream.listen((d) {
+      setState(() => duration = d!);
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    advancedPlayer.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -29,28 +57,36 @@ class _MusicState extends State<Music> {
         body: Column(
           children: [
             Container(
-              padding: const EdgeInsets.all(30),
+              height: MediaQuery.of(context).size.height * 0.5,
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.all(20),
               child: Image.network(
                   "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg"),
             ),
             Container(
-              width: 300,
+              width: MediaQuery.of(context).size.width / 1.5,
               height: 30,
-              child: Expanded(
-                child: _buildComplexMarquee(),
-              ),
+              child: _buildComplexMarquee(),
             ),
             Container(
               child: Slider(
-                value: _value,
-                min: 0,
-                max: 100,
+                value: position.inSeconds.toDouble(),
+                max: duration.inSeconds.toDouble(),
                 onChanged: (value) {
                   setState(() {
-                    _value = value;
+                    advancedPlayer.seek(Duration(seconds: value.toInt() - 1));
                   });
                 },
               ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(FormatTime(position)),
+                    Text(FormatTime(duration)),
+                  ]),
             ),
             Container(
               child: Row(
@@ -72,6 +108,14 @@ class _MusicState extends State<Music> {
     );
   }
 
+  String FormatTime(Duration value) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final Hours = twoDigits(value.inHours);
+    final Minutes = twoDigits(value.inMinutes.remainder(60));
+    final Seconds = twoDigits(value.inSeconds.remainder(60));
+    return [if (value.inHours > 0) Hours, Minutes, Seconds].join(":");
+  }
+
   Widget _buildComplexMarquee() {
     return Marquee(
       text: '[ Megurine Luka ] Dreamin Chu Chu',
@@ -91,15 +135,28 @@ class _MusicState extends State<Music> {
 
   List<Widget> AudioControl() {
     return <Widget>[
+      IconButton(iconSize: 30, onPressed: () {}, icon: Icon(Icons.shuffle)),
       IconButton(
           iconSize: 50,
-          onPressed: () {},
-          icon: Icon(Icons.keyboard_double_arrow_left)),
+          onPressed: () {
+            advancedPlayer.seekToPrevious();
+          },
+          icon: Icon(Icons.skip_previous)),
       IconButton(
         iconSize: 100,
         onPressed: () {
           setState(() {
-            iconChange = !iconChange;
+            switch (iconChange) {
+              case false:
+                advancedPlayer.play();
+                iconChange = !iconChange;
+                break;
+              case true:
+                advancedPlayer.stop();
+                iconChange = !iconChange;
+                break;
+              default:
+            }
           });
         },
         icon:
@@ -107,8 +164,11 @@ class _MusicState extends State<Music> {
       ),
       IconButton(
           iconSize: 50,
-          onPressed: () {},
-          icon: Icon(Icons.keyboard_double_arrow_right)),
+          onPressed: () {
+            advancedPlayer.seekToNext();
+          },
+          icon: Icon(Icons.skip_next)),
+      IconButton(iconSize: 30, onPressed: () {}, icon: Icon(Icons.repeat)),
     ];
   }
 }
