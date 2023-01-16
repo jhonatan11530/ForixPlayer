@@ -11,8 +11,10 @@ class Music extends StatefulWidget {
 
 class _MusicState extends State<Music> {
   bool iconChange = false;
+  int iconChangeRepat = 0;
   Duration duration = Duration.zero;
   Duration position = Duration.zero;
+
   final advancedPlayer = AudioPlayer();
 
   @override
@@ -24,10 +26,13 @@ class _MusicState extends State<Music> {
   _musicInit() async {
     await advancedPlayer.setAsset("assets/audio.mp3");
 
+   
+
     advancedPlayer.positionStream.listen((Duration p) {
       setState(() => position = p);
     });
-    
+
+
     advancedPlayer.durationStream.listen((d) {
       setState(() => duration = d!);
     });
@@ -39,15 +44,17 @@ class _MusicState extends State<Music> {
     advancedPlayer.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(scaffoldBackgroundColor: Colors.amber),
+      theme: ThemeData(scaffoldBackgroundColor: Colors.green),
       home: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           leading: IconButton(
               onPressed: () {
+                AudioPlayer.clearAssetCache();
                 Navigator.pop(context);
               },
               icon: Icon(Icons.keyboard_arrow_down_sharp)),
@@ -137,11 +144,14 @@ class _MusicState extends State<Music> {
     return <Widget>[
       IconButton(iconSize: 30, onPressed: () {}, icon: Icon(Icons.shuffle)),
       IconButton(
-          iconSize: 50,
-          onPressed: () {
-            advancedPlayer.seekToPrevious();
-          },
-          icon: Icon(Icons.skip_previous)),
+        iconSize: 50,
+        icon: Icon(Icons.skip_previous),
+        onPressed: () {
+          setState(() {
+            print(advancedPlayer.sequence);
+          });
+        },
+      ),
       IconButton(
         iconSize: 100,
         onPressed: () {
@@ -163,12 +173,43 @@ class _MusicState extends State<Music> {
             Icon((iconChange == false) ? Icons.play_arrow : Icons.pause_sharp),
       ),
       IconButton(
-          iconSize: 50,
+        iconSize: 50,
+        icon: Icon(Icons.skip_next),
+        onPressed: () {
+          setState(() {
+            print(advancedPlayer.hasNext);
+          });
+        },
+      ),
+      IconButton(
+          iconSize: 30,
           onPressed: () {
-            advancedPlayer.seekToNext();
+            setState(() {
+              switch (iconChangeRepat) {
+                case 0:
+                  iconChangeRepat = 1;
+                  advancedPlayer.setLoopMode(LoopMode.all);
+                  break;
+                case 1:
+                  iconChangeRepat = 2;
+                  advancedPlayer.setLoopMode(LoopMode.one);
+                  break;
+                case 2:
+                  iconChangeRepat = 0;
+                  advancedPlayer.setLoopMode(LoopMode.off);
+                  break;
+              }
+            });
           },
-          icon: Icon(Icons.skip_next)),
-      IconButton(iconSize: 30, onPressed: () {}, icon: Icon(Icons.repeat)),
+          icon: Icon(
+            (iconChangeRepat == 0)
+                ? Icons.repeat
+                : (iconChangeRepat == 1)
+                    ? Icons.repeat_on_rounded
+                    : (iconChangeRepat == 2)
+                        ? Icons.repeat_one
+                        : null,
+          )),
     ];
   }
 }

@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:forixplayer/pages/Music/music.dart';
+import 'package:path_provider/path_provider.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -15,6 +17,18 @@ class _HomeState extends State<Home> {
     "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg",
     "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg"
   ];
+  List<File> _musicFiles = [];
+  @override
+  void initState() {
+    super.initState();
+
+    getMusicFiles().then((value) {
+      setState(() {
+        _musicFiles = value;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -62,11 +76,11 @@ class _HomeState extends State<Home> {
               ),
               Expanded(
                 child: ListView.builder(
-                  itemCount: 10,
+                  itemCount: _musicFiles?.length ?? 0,
                   itemBuilder: (context, index) {
+                    final file = _musicFiles[index];
                     return ListTile(
-                      title: Text("Titulo Musica"),
-                      subtitle: Text("Sub titulo"),
+                      title: Text(file.path.split('/').last),
                       leading: CircleAvatar(
                         radius: 20,
                         backgroundColor: Colors.transparent,
@@ -96,25 +110,48 @@ class _HomeState extends State<Home> {
               child: AspectRatio(
                 aspectRatio: 4 / 4,
                 child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Material(
-                      child: Ink.image(
-                        image: NetworkImage(_Image[index]),
-                        fit: BoxFit.cover,
-                        width: 150,
-                        height: 150,
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => Music(),
-                            ));
-                          },
-                        ),
+                  borderRadius: BorderRadius.circular(10),
+                  child: Material(
+                    child: Ink.image(
+                      image: NetworkImage(_Image[index]),
+                      fit: BoxFit.cover,
+                      width: 150,
+                      height: 150,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => Music(),
+                          ));
+                        },
                       ),
-                    )),
+                    ),
+                  ),
+                ),
               ),
             ),
           ],
         ),
       );
+
+  Future<List<File>> getMusicFiles() async {
+    // obtener la ruta de la carpeta de archivos del dispositivo
+    final directory = await getExternalStorageDirectory();
+    final musicFiles = <File>[];
+    final musicExtensions = ['.mp3', '.m4a'];
+    // buscar archivos en todas las carpetas
+    final files = await _searchAllFiles(directory!, musicExtensions);
+    musicFiles.addAll(files);
+    return musicFiles;
+  }
+
+  Future<List<File>> _searchAllFiles(Directory dir, List<String> extensions) async {
+    final files = <File>[];
+    final lister = dir.list(recursive: true);
+    await for (final file in lister) {
+      if (file is File && extensions.contains(file.path.split('.').last)) {
+        files.add(file);
+      }
+    }
+    return files;
+  }
 }
