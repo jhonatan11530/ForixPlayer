@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:forixplayer/pages/home.dart';
 import 'package:forixplayer/pages/library.dart';
 import 'package:forixplayer/pages/settings.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 
 void main() {
   runApp(ForixPlayer());
@@ -15,15 +17,43 @@ class ForixPlayer extends StatefulWidget {
 }
 
 class _ForixPlayerState extends State<ForixPlayer> {
+  final OnAudioQuery _audioQuery = OnAudioQuery();
   // primary color nabvar - second color footer - tree color theme body
   List<Color> _colorAplicacion = [Colors.blue, Colors.blue, Colors.white];
+
+  @override
+  void initState() {
+    super.initState();
+
+    requestStoragePermission();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        bottomNavigationBar: MyNavigationBar(),
+        //bottomNavigationBar: MyNavigationBar(),
       ),
     );
+  }
+
+  void requestStoragePermission() async {
+    //only if the platform is not web, coz web have no permissions
+    if (!kIsWeb) {
+      bool permissionStatus = await _audioQuery.permissionsStatus();
+      if (!permissionStatus) {
+        await _audioQuery.permissionsRequest();
+
+        MaterialApp(
+          home: Scaffold(
+            bottomNavigationBar: MyNavigationBar(),
+          ),
+        );
+      }
+
+      //ensure build method is called
+      setState(() {});
+    }
   }
 }
 

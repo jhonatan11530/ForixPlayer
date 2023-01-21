@@ -26,16 +26,14 @@ class _MusicState extends State<Music> {
   _musicInit() async {
     await advancedPlayer.setAsset("assets/audio.mp3");
 
-   
-
     advancedPlayer.positionStream.listen((Duration p) {
       setState(() => position = p);
     });
 
-
     advancedPlayer.durationStream.listen((d) {
       setState(() => duration = d!);
     });
+
   }
 
   @override
@@ -43,7 +41,6 @@ class _MusicState extends State<Music> {
     super.dispose();
     advancedPlayer.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -78,10 +75,10 @@ class _MusicState extends State<Music> {
             Container(
               child: Slider(
                 value: position.inSeconds.toDouble(),
-                max: duration.inSeconds.toDouble(),
+                max: duration.inSeconds.toDouble() + 1.0,
                 onChanged: (value) {
                   setState(() {
-                    advancedPlayer.seek(Duration(seconds: value.toInt() - 1));
+                    advancedPlayer.seek(Duration(seconds: value.toInt()));
                   });
                 },
               ),
@@ -97,19 +94,10 @@ class _MusicState extends State<Music> {
             ),
             Container(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: AudioControl(),
-              ),
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: AudioControl(context)),
             ),
           ],
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          label: const Text('Atras'),
-          icon: const Icon(Icons.arrow_back),
-          backgroundColor: Colors.blue,
         ),
       ),
     );
@@ -140,11 +128,14 @@ class _MusicState extends State<Music> {
     );
   }
 
-  List<Widget> AudioControl() {
+  List<Widget> AudioControl(BuildContext context) {
     return <Widget>[
-      IconButton(iconSize: 30, onPressed: () {}, icon: Icon(Icons.shuffle)),
       IconButton(
-        iconSize: 50,
+          iconSize: MediaQuery.of(context).size.height / 15,
+          onPressed: () {},
+          icon: Icon(Icons.shuffle)),
+      IconButton(
+        iconSize: MediaQuery.of(context).size.height / 10,
         icon: Icon(Icons.skip_previous),
         onPressed: () {
           setState(() {
@@ -153,7 +144,7 @@ class _MusicState extends State<Music> {
         },
       ),
       IconButton(
-        iconSize: 100,
+        iconSize: MediaQuery.of(context).size.height / 10,
         onPressed: () {
           setState(() {
             switch (iconChange) {
@@ -173,7 +164,7 @@ class _MusicState extends State<Music> {
             Icon((iconChange == false) ? Icons.play_arrow : Icons.pause_sharp),
       ),
       IconButton(
-        iconSize: 50,
+        iconSize: MediaQuery.of(context).size.height / 10,
         icon: Icon(Icons.skip_next),
         onPressed: () {
           setState(() {
@@ -182,7 +173,7 @@ class _MusicState extends State<Music> {
         },
       ),
       IconButton(
-          iconSize: 30,
+          iconSize: MediaQuery.of(context).size.height / 15,
           onPressed: () {
             setState(() {
               switch (iconChangeRepat) {

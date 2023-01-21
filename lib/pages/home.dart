@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forixplayer/pages/Music/music.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -15,6 +16,7 @@ class _HomeState extends State<Home> {
     "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg",
     "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg"
   ];
+  final OnAudioQuery _audioQuery = OnAudioQuery();
 
   @override
   Widget build(BuildContext context) {
@@ -62,21 +64,33 @@ class _HomeState extends State<Home> {
                 height: 10,
               ),
               Expanded(
-                child: ListView.builder(
-                  itemCount: _Image.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text("hola"),
-                      leading: CircleAvatar(
-                        radius: 20,
-                        backgroundColor: Colors.transparent,
-                        backgroundImage: NetworkImage(
-                            "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg"),
-                      ),
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => Music(),
-                        ));
+                child: FutureBuilder<List<SongModel>>(
+                  future: _audioQuery.querySongs(
+                    sortType: null,
+                    orderType: OrderType.ASC_OR_SMALLER,
+                    uriType: UriType.EXTERNAL,
+                    ignoreCase: true,
+                  ),
+                  builder: (context, item) {
+                    if (item.data == null)
+                      return const CircularProgressIndicator();
+                    if (item.data!.isEmpty) return const Text("Nothing found!");
+                    return ListView.builder(
+                      itemCount: item.data!.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(item.data![index].title ?? "No Artist"),
+                          subtitle: Text(item.data![index].displayName ?? ""),
+                          leading: QueryArtworkWidget(
+                            id: item.data![index].id,
+                            type: ArtworkType.AUDIO,
+                          ),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => Music(),
+                            ));
+                          },
+                        );
                       },
                     );
                   },
