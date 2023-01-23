@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:forixplayer/pages/Music/music.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class Home extends StatefulWidget {
@@ -47,7 +46,12 @@ class _HomeState extends State<Home> {
                   future: SoundInternalExternal(),
                   builder: (context, item) {
                     if (item.data == null)
-                      return const CircularProgressIndicator();
+                      return Center(
+                        child: Container(
+                            width: 100,
+                            height: 100,
+                            child: CircularProgressIndicator()),
+                      );
                     if (item.data!.isEmpty) return const Text("Nothing found!");
                     return ListView.separated(
                       scrollDirection: Axis.horizontal,
@@ -71,7 +75,12 @@ class _HomeState extends State<Home> {
                   future: SoundInternalExternal(),
                   builder: (context, item) {
                     if (item.data == null)
-                      return const CircularProgressIndicator();
+                      return Center(
+                        child: Container(
+                            width: 100,
+                            height: 100,
+                            child: CircularProgressIndicator()),
+                      );
                     if (item.data!.isEmpty) return const Text("Nothing found!");
                     return ListView.builder(
                       itemCount: item.data!.length,
@@ -85,10 +94,7 @@ class _HomeState extends State<Home> {
                           ),
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => Music(
-                                  titulo: item.data![index].title,
-                                  uri: item.data![index].uri,
-                                  id: item.data![index].id),
+                              builder: (context) => Music(todos: item.data!),
                             ));
                           },
                         );
@@ -112,14 +118,6 @@ class _HomeState extends State<Home> {
     );
   }
 
-  void toast(BuildContext context, String text) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(text),
-      behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
-    ));
-  }
-
   Widget buildCard(BuildContext context, int index,
           AsyncSnapshot<List<SongModel>> item) =>
       Container(
@@ -138,10 +136,7 @@ class _HomeState extends State<Home> {
                       ),
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => Music(
-                              titulo: item.data![index].title,
-                              uri: item.data![index].uri,
-                              id: item.data![index].id),
+                          builder: (context) => Music(todos: item.data!),
                         ));
                       },
                     ),

@@ -1,24 +1,31 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:marquee/marquee.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:rxdart/rxdart.dart';
+
+class Todo {
+  List<SongModel> MusicSongs;
+  Todo(this.MusicSongs);
+}
 
 class Music extends StatefulWidget {
-  final int id;
-  final String? uri;
-  final String titulo;
-  const Music({super.key, required this.titulo, this.uri, required this.id});
+  final List<SongModel> todos;
+  const Music({super.key, required this.todos});
   @override
   State<Music> createState() => _MusicState();
 }
 
 class _MusicState extends State<Music> {
-  bool iconChange = false;
-  int iconChangeRepat = 0;
+  bool iconChange = false, iconChangeshuffle = false;
+  int iconChangeRepat = 0, currentSongImage = 0;
   Duration duration = Duration.zero;
   Duration position = Duration.zero;
-
+  List<SongModel> songs = [];
+  String currentSongTitle = '';
   final advancedPlayer = AudioPlayer();
 
   @override
@@ -28,14 +35,7 @@ class _MusicState extends State<Music> {
   }
 
   _musicInit() async {
-    await advancedPlayer.setAudioSource(AudioSource.uri(
-      Uri.parse(widget.uri!),
-      tag: MediaItem(
-        id: '${widget.id}',
-        title: widget.titulo,
-        artUri: Uri.parse(widget.uri!),
-      ),
-    ));
+    await advancedPlayer.setAudioSource(createPlaylist(widget.todos));
 
     advancedPlayer.positionStream.listen((Duration p) {
       setState(() => position = p);
@@ -45,9 +45,10 @@ class _MusicState extends State<Music> {
       setState(() => duration = d!);
     });
 
-    advancedPlayer.playerStateStream.listen((playerState) {
-      if (playerState.processingState == ProcessingState.completed) {
-        print("asdasdasdasdasdasdasdasd");
+    advancedPlayer.currentIndexStream.listen((index) {
+      if (index != null) {
+        currentSongImage = widget.todos[index].id;
+        _updateCurrentPlayingSongDetails(widget.todos, index);
       }
     });
   }
@@ -61,10 +62,11 @@ class _MusicState extends State<Music> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(scaffoldBackgroundColor: Colors.green),
+      theme: ThemeData(
+          scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255)),
       home: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
+          backgroundColor: Color.fromARGB(100, 114, 114, 114),
           leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -80,14 +82,14 @@ class _MusicState extends State<Music> {
               width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.all(20),
               child: QueryArtworkWidget(
-                id: widget.id,
+                id: currentSongImage,
                 type: ArtworkType.AUDIO,
               ),
             ),
             Container(
               width: MediaQuery.of(context).size.width / 1.5,
               height: 30,
-              child: _buildComplexMarquee(widget.titulo),
+              child: _buildComplexMarquee(currentSongTitle),
             ),
             Container(
               child: Slider(
@@ -150,10 +152,26 @@ class _MusicState extends State<Music> {
       Expanded(
           child: IconButton(
         iconSize: MediaQuery.of(context).size.height / 20,
-        icon: Icon(
-          Icons.shuffle,
-        ),
-        onPressed: () {},
+        icon: (iconChangeshuffle == false)
+            ? Icon(Icons.shuffle, color: Colors.grey)
+            : Icon(Icons.shuffle),
+        onPressed: () {
+          setState(() {
+            switch (iconChangeshuffle) {
+              case false:
+                advancedPlayer.shuffle();
+                advancedPlayer.setShuffleModeEnabled(false);
+                iconChangeshuffle = !iconChangeshuffle;
+                break;
+              case true:
+                advancedPlayer.shuffle();
+                advancedPlayer.setShuffleModeEnabled(true);
+                iconChangeshuffle = !iconChangeshuffle;
+                break;
+              default:
+            }
+          });
+        },
       )),
       Expanded(
         child: IconButton(
@@ -230,5 +248,23 @@ class _MusicState extends State<Music> {
         ),
       ),
     ];
+  }
+
+  ConcatenatingAudioSource createPlaylist(List<SongModel> songs) {
+    List<AudioSource> sources = [];
+    for (var song in songs) {
+      sources.add(AudioSource.uri(Uri.parse(song.uri!),
+          tag: MediaItem(
+              id: '${song.id}',
+              title: song.title,
+              artUri: Uri.parse(song.uri!))));
+    }
+    return ConcatenatingAudioSource(children: sources);
+  }
+
+  void _updateCurrentPlayingSongDetails(List<SongModel> songs, int index) {
+    setState(() {
+      currentSongTitle = songs[index].title;
+    });
   }
 }
