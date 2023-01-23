@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:marquee/marquee.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 
 class Music extends StatefulWidget {
-  const Music({super.key});
-
+  final int id;
+  final String? uri;
+  final String titulo;
+  const Music({super.key, required this.titulo, this.uri, required this.id});
   @override
   State<Music> createState() => _MusicState();
 }
@@ -24,7 +28,14 @@ class _MusicState extends State<Music> {
   }
 
   _musicInit() async {
-    await advancedPlayer.setAsset("assets/audio.mp3");
+    await advancedPlayer.setAudioSource(AudioSource.uri(
+      Uri.parse(widget.uri!),
+      tag: MediaItem(
+        id: '${widget.id}',
+        title: widget.titulo,
+        artUri: Uri.parse(widget.uri!),
+      ),
+    ));
 
     advancedPlayer.positionStream.listen((Duration p) {
       setState(() => position = p);
@@ -34,6 +45,11 @@ class _MusicState extends State<Music> {
       setState(() => duration = d!);
     });
 
+    advancedPlayer.playerStateStream.listen((playerState) {
+      if (playerState.processingState == ProcessingState.completed) {
+        print("asdasdasdasdasdasdasdasd");
+      }
+    });
   }
 
   @override
@@ -51,7 +67,6 @@ class _MusicState extends State<Music> {
           backgroundColor: Colors.transparent,
           leading: IconButton(
               onPressed: () {
-                AudioPlayer.clearAssetCache();
                 Navigator.pop(context);
               },
               icon: Icon(Icons.keyboard_arrow_down_sharp)),
@@ -64,18 +79,20 @@ class _MusicState extends State<Music> {
               height: MediaQuery.of(context).size.height * 0.5,
               width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.all(20),
-              child: Image.network(
-                  "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg"),
+              child: QueryArtworkWidget(
+                id: widget.id,
+                type: ArtworkType.AUDIO,
+              ),
             ),
             Container(
               width: MediaQuery.of(context).size.width / 1.5,
               height: 30,
-              child: _buildComplexMarquee(),
+              child: _buildComplexMarquee(widget.titulo),
             ),
             Container(
               child: Slider(
                 value: position.inSeconds.toDouble(),
-                max: duration.inSeconds.toDouble() + 1.0,
+                max: duration.inSeconds.toDouble() + 0.0,
                 onChanged: (value) {
                   setState(() {
                     advancedPlayer.seek(Duration(seconds: value.toInt()));
@@ -111,9 +128,9 @@ class _MusicState extends State<Music> {
     return [if (value.inHours > 0) Hours, Minutes, Seconds].join(":");
   }
 
-  Widget _buildComplexMarquee() {
+  Widget _buildComplexMarquee(String titulo) {
     return Marquee(
-      text: '[ Megurine Luka ] Dreamin Chu Chu',
+      text: titulo,
       style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
       scrollAxis: Axis.horizontal,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,50 +147,68 @@ class _MusicState extends State<Music> {
 
   List<Widget> AudioControl(BuildContext context) {
     return <Widget>[
-      IconButton(
+      Expanded(
+          child: IconButton(
+        iconSize: MediaQuery.of(context).size.height / 20,
+        icon: Icon(
+          Icons.shuffle,
+        ),
+        onPressed: () {},
+      )),
+      Expanded(
+        child: IconButton(
           iconSize: MediaQuery.of(context).size.height / 15,
-          onPressed: () {},
-          icon: Icon(Icons.shuffle)),
-      IconButton(
-        iconSize: MediaQuery.of(context).size.height / 10,
-        icon: Icon(Icons.skip_previous),
-        onPressed: () {
-          setState(() {
-            print(advancedPlayer.sequence);
-          });
-        },
+          icon: Icon(Icons.skip_previous),
+          onPressed: () {
+            setState(() {
+              advancedPlayer.seekToPrevious();
+            });
+          },
+        ),
       ),
-      IconButton(
-        iconSize: MediaQuery.of(context).size.height / 10,
-        onPressed: () {
-          setState(() {
-            switch (iconChange) {
-              case false:
-                advancedPlayer.play();
-                iconChange = !iconChange;
-                break;
-              case true:
-                advancedPlayer.stop();
-                iconChange = !iconChange;
-                break;
-              default:
-            }
-          });
-        },
-        icon:
-            Icon((iconChange == false) ? Icons.play_arrow : Icons.pause_sharp),
+      Expanded(
+        child: IconButton(
+          iconSize: MediaQuery.of(context).size.height / 10,
+          icon: Icon(
+              (iconChange == false) ? Icons.play_arrow : Icons.pause_sharp),
+          onPressed: () {
+            setState(() {
+              switch (iconChange) {
+                case false:
+                  advancedPlayer.play();
+                  iconChange = !iconChange;
+                  break;
+                case true:
+                  advancedPlayer.stop();
+                  iconChange = !iconChange;
+                  break;
+                default:
+              }
+            });
+          },
+        ),
       ),
-      IconButton(
-        iconSize: MediaQuery.of(context).size.height / 10,
-        icon: Icon(Icons.skip_next),
-        onPressed: () {
-          setState(() {
-            print(advancedPlayer.hasNext);
-          });
-        },
-      ),
-      IconButton(
+      Expanded(
+        child: IconButton(
           iconSize: MediaQuery.of(context).size.height / 15,
+          icon: Icon(Icons.skip_next),
+          onPressed: () {
+            setState(() {
+              advancedPlayer.seekToNext();
+            });
+          },
+        ),
+      ),
+      Expanded(
+        child: IconButton(
+          iconSize: MediaQuery.of(context).size.height / 20,
+          icon: Icon((iconChangeRepat == 0)
+              ? Icons.repeat
+              : (iconChangeRepat == 1)
+                  ? Icons.repeat_on_rounded
+                  : (iconChangeRepat == 2)
+                      ? Icons.repeat_one
+                      : null),
           onPressed: () {
             setState(() {
               switch (iconChangeRepat) {
@@ -192,15 +227,8 @@ class _MusicState extends State<Music> {
               }
             });
           },
-          icon: Icon(
-            (iconChangeRepat == 0)
-                ? Icons.repeat
-                : (iconChangeRepat == 1)
-                    ? Icons.repeat_on_rounded
-                    : (iconChangeRepat == 2)
-                        ? Icons.repeat_one
-                        : null,
-          )),
+        ),
+      ),
     ];
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forixplayer/pages/Music/music.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class Home extends StatefulWidget {
@@ -10,14 +11,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final List<String> _Image = [
-    "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg",
-    "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg",
-    "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg",
-    "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg"
-  ];
   final OnAudioQuery _audioQuery = OnAudioQuery();
-
+  List<SongModel> songs = [];
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -48,15 +43,23 @@ class _HomeState extends State<Home> {
               Container(
                 width: double.infinity,
                 height: 150,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.all(10),
-                  itemCount: _Image.length,
-                  separatorBuilder: (context, index) => SizedBox(
-                    width: 12,
-                  ),
-                  itemBuilder: (context, index) {
-                    return buildCard(context, index);
+                child: FutureBuilder<List<SongModel>>(
+                  future: SoundInternalExternal(),
+                  builder: (context, item) {
+                    if (item.data == null)
+                      return const CircularProgressIndicator();
+                    if (item.data!.isEmpty) return const Text("Nothing found!");
+                    return ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.all(10),
+                      itemCount: item.data!.length,
+                      separatorBuilder: (context, index) => SizedBox(
+                        width: 12,
+                      ),
+                      itemBuilder: (context, index) {
+                        return buildCard(context, index, item);
+                      },
+                    );
                   },
                 ),
               ),
@@ -65,12 +68,7 @@ class _HomeState extends State<Home> {
               ),
               Expanded(
                 child: FutureBuilder<List<SongModel>>(
-                  future: _audioQuery.querySongs(
-                    sortType: null,
-                    orderType: OrderType.ASC_OR_SMALLER,
-                    uriType: UriType.EXTERNAL,
-                    ignoreCase: true,
-                  ),
+                  future: SoundInternalExternal(),
                   builder: (context, item) {
                     if (item.data == null)
                       return const CircularProgressIndicator();
@@ -87,7 +85,10 @@ class _HomeState extends State<Home> {
                           ),
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => Music(),
+                              builder: (context) => Music(
+                                  titulo: item.data![index].title,
+                                  uri: item.data![index].uri,
+                                  id: item.data![index].id),
                             ));
                           },
                         );
@@ -103,7 +104,25 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget buildCard(BuildContext context, int index) => Container(
+  Future<List<SongModel>> SoundInternalExternal() {
+    return _audioQuery.querySongs(
+      orderType: OrderType.ASC_OR_SMALLER,
+      uriType: UriType.INTERNAL,
+      ignoreCase: true,
+    );
+  }
+
+  void toast(BuildContext context, String text) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(text),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
+    ));
+  }
+
+  Widget buildCard(BuildContext context, int index,
+          AsyncSnapshot<List<SongModel>> item) =>
+      Container(
         child: Column(
           children: [
             Expanded(
@@ -112,18 +131,19 @@ class _HomeState extends State<Home> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Material(
-                    child: Ink.image(
-                      image: NetworkImage(_Image[index]),
-                      fit: BoxFit.cover,
-                      width: 150,
-                      height: 150,
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => Music(),
-                          ));
-                        },
+                    child: InkWell(
+                      child: QueryArtworkWidget(
+                        id: item.data![index].id,
+                        type: ArtworkType.AUDIO,
                       ),
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => Music(
+                              titulo: item.data![index].title,
+                              uri: item.data![index].uri,
+                              id: item.data![index].id),
+                        ));
+                      },
                     ),
                   ),
                 ),

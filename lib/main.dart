@@ -3,12 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:forixplayer/pages/home.dart';
 import 'package:forixplayer/pages/library.dart';
 import 'package:forixplayer/pages/settings.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
-void main() {
-  runApp(ForixPlayer());
+Future<void> main() async {
+  await JustAudioBackground.init(
+    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
+    androidNotificationChannelName: 'Audio playback',
+    androidNotificationOngoing: true,
+  );
+  runApp(const ForixPlayer());
 }
-
 class ForixPlayer extends StatefulWidget {
   const ForixPlayer({super.key});
 
@@ -32,7 +37,7 @@ class _ForixPlayerState extends State<ForixPlayer> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        //bottomNavigationBar: MyNavigationBar(),
+        bottomNavigationBar: MyNavigationBar(),
       ),
     );
   }
@@ -44,13 +49,7 @@ class _ForixPlayerState extends State<ForixPlayer> {
       if (!permissionStatus) {
         await _audioQuery.permissionsRequest();
 
-        MaterialApp(
-          home: Scaffold(
-            bottomNavigationBar: MyNavigationBar(),
-          ),
-        );
       }
-
       //ensure build method is called
       setState(() {});
     }
