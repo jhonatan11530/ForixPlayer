@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -8,13 +9,26 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
+  late final String AppVersion;
   final List<String> entries = <String>[
     'Cambiar Tema',
-    'Buscar Actualizaciones',
     'Ponte en Contacto',
     'Terminos del servicio',
     'Acerca de',
   ];
+  @override
+  void initState() {
+    super.initState();
+    _initPackageInfo();
+  }
+
+  Future<void> _initPackageInfo() async {
+    final info = await PackageInfo.fromPlatform();
+    setState(() {
+      AppVersion = info.version;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -52,13 +66,46 @@ class _SettingsState extends State<Settings> {
                       color: Colors.blue,
                       size: 15,
                     ),
-                    onLongPress: () {},
+                    onTap: () {
+                      setState(() {
+                        switch (entries[index]) {
+                          case "Cambiar Tema":
+                            break;
+                          case "Ponte en Contacto":
+                            break;
+                          case "Terminos del servicio":
+                            break;
+                          case "Acerca de":
+                            _showAlertAcerca(context);
+                            break;
+                          default:
+                        }
+                      });
+                    },
                   );
                 },
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showAlertAcerca(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Version de la aplicacion"),
+        content: Text(AppVersion),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Entendido'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
       ),
     );
   }
