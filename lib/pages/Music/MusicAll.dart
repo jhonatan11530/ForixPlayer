@@ -1,27 +1,20 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:just_audio_background/just_audio_background.dart';
-import 'package:marquee/marquee.dart';
+import 'package:marquee_widget/marquee_widget.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import 'package:rxdart/rxdart.dart';
-
-class Todo {
-  List<SongModel> MusicSongs;
-  Todo(this.MusicSongs);
-}
 
 class Music extends StatefulWidget {
-  final List<SongModel> todos;
-  const Music({super.key, required this.todos});
+  final List<SongModel> MusicSongs;
+  final int index;
+  const Music({super.key, required this.MusicSongs, required this.index});
   @override
   State<Music> createState() => _MusicState();
 }
 
 class _MusicState extends State<Music> {
   bool iconChange = false, iconChangeshuffle = false;
-  int iconChangeRepat = 0, currentSongImage = 0;
+  int iconChangeRepat = 0, currentIndex = 0;
   Duration duration = Duration.zero;
   Duration position = Duration.zero;
   List<SongModel> songs = [];
@@ -31,11 +24,14 @@ class _MusicState extends State<Music> {
   @override
   void initState() {
     super.initState();
+    songs.clear();
+    songs = widget.MusicSongs;
     _musicInit();
   }
 
   _musicInit() async {
-    await advancedPlayer.setAudioSource(createPlaylist(widget.todos));
+    await advancedPlayer.setAudioSource(createPlaylist(widget.MusicSongs),
+        initialIndex: widget.index);
 
     advancedPlayer.positionStream.listen((Duration p) {
       setState(() => position = p);
@@ -47,8 +43,7 @@ class _MusicState extends State<Music> {
 
     advancedPlayer.currentIndexStream.listen((index) {
       if (index != null) {
-        currentSongImage = widget.todos[index].id;
-        _updateCurrentPlayingSongDetails(widget.todos, index);
+        _updateCurrentPlayingSongDetails(index);
       }
     });
   }
@@ -73,7 +68,7 @@ class _MusicState extends State<Music> {
               },
               icon: Icon(Icons.keyboard_arrow_down_sharp)),
           elevation: 0,
-          title: Text('Press the button with a label below!'),
+          title: Text('Estas Escuchando ${songs[currentIndex].title}'),
         ),
         body: Column(
           children: [
@@ -82,7 +77,7 @@ class _MusicState extends State<Music> {
               width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.all(20),
               child: QueryArtworkWidget(
-                id: currentSongImage,
+                id: songs[currentIndex].id,
                 type: ArtworkType.AUDIO,
               ),
             ),
@@ -130,20 +125,20 @@ class _MusicState extends State<Music> {
     return [if (value.inHours > 0) Hours, Minutes, Seconds].join(":");
   }
 
-  Widget _buildComplexMarquee(String titulo) {
+  Widget _buildComplexMarquee(String title) {
     return Marquee(
-      text: titulo,
-      style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-      scrollAxis: Axis.horizontal,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      blankSpace: 20.0,
-      velocity: 50.0,
-      pauseAfterRound: Duration(seconds: 5),
-      startPadding: 0,
-      accelerationDuration: Duration(seconds: 1),
-      accelerationCurve: Curves.linear,
-      decelerationDuration: Duration(milliseconds: 500),
-      decelerationCurve: Curves.easeOut,
+      autoRepeat: true,
+      animationDuration: const Duration(seconds: 5),
+      backDuration: const Duration(milliseconds: 5000),
+      pauseDuration: const Duration(milliseconds: 2500),
+      directionMarguee: DirectionMarguee.TwoDirection,
+      child: Container(
+        child: Center(
+          child: Text(title,
+              style:
+                  const TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+        ),
+      ),
     );
   }
 
@@ -262,9 +257,13 @@ class _MusicState extends State<Music> {
     return ConcatenatingAudioSource(children: sources);
   }
 
-  void _updateCurrentPlayingSongDetails(List<SongModel> songs, int index) {
+  void _updateCurrentPlayingSongDetails(int index) {
     setState(() {
-      currentSongTitle = songs[index].title;
+      if (songs.isNotEmpty) {
+        currentSongTitle = songs[index].title;
+        currentIndex = index;
+      }
     });
   }
+
 }

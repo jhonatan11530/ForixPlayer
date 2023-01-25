@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:forixplayer/pages/Music/music.dart';
+import 'package:forixplayer/pages/Music/MusicAll.dart';
+import 'package:forixplayer/pages/Music/MusicArtist.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class Home extends StatefulWidget {
@@ -24,7 +25,7 @@ class _HomeState extends State<Home> {
                 height: 120,
                 child: Padding(
                   padding:
-                      new EdgeInsets.symmetric(horizontal: 0, vertical: 40),
+                      new EdgeInsets.symmetric(horizontal: 0, vertical: 30),
                   child: Row(
                     children: [
                       Padding(padding: EdgeInsets.all(15)),
@@ -42,8 +43,8 @@ class _HomeState extends State<Home> {
               Container(
                 width: double.infinity,
                 height: 150,
-                child: FutureBuilder<List<SongModel>>(
-                  future: SoundInternalExternal(),
+                child: FutureBuilder<List<ArtistModel>>(
+                  future: SoundArtist(),
                   builder: (context, item) {
                     if (item.data == null)
                       return Center(
@@ -61,7 +62,7 @@ class _HomeState extends State<Home> {
                         width: 12,
                       ),
                       itemBuilder: (context, index) {
-                        return buildCard(context, index, item);
+                        return buildCardArtist(context, index, item);
                       },
                     );
                   },
@@ -94,7 +95,8 @@ class _HomeState extends State<Home> {
                           ),
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => Music(todos: item.data!),
+                              builder: (context) =>
+                                  Music(MusicSongs: item.data!, index: index),
                             ));
                           },
                         );
@@ -110,6 +112,14 @@ class _HomeState extends State<Home> {
     );
   }
 
+  Future<List<ArtistModel>> SoundArtist() {
+    return _audioQuery.queryArtists(
+      orderType: OrderType.ASC_OR_SMALLER,
+      uriType: UriType.INTERNAL,
+      ignoreCase: true,
+    );
+  }
+
   Future<List<SongModel>> SoundInternalExternal() {
     return _audioQuery.querySongs(
       orderType: OrderType.ASC_OR_SMALLER,
@@ -118,33 +128,34 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget buildCard(BuildContext context, int index,
-          AsyncSnapshot<List<SongModel>> item) =>
-      Container(
-        child: Column(
-          children: [
-            Expanded(
-              child: AspectRatio(
-                aspectRatio: 4 / 4,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Material(
-                    child: InkWell(
-                      child: QueryArtworkWidget(
-                        id: item.data![index].id,
-                        type: ArtworkType.AUDIO,
-                      ),
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => Music(todos: item.data!),
-                        ));
-                      },
+  Widget buildCardArtist(
+      BuildContext context, int index, AsyncSnapshot<List<ArtistModel>> item) {
+    return Container(
+      child: Column(
+        children: [
+          Expanded(
+            child: AspectRatio(
+              aspectRatio: 4 / 4,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Material(
+                  child: InkWell(
+                    child: QueryArtworkWidget(
+                      id: item.data![index].id,
+                      type: ArtworkType.AUDIO,
                     ),
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => MusicArtist(MusicArtistAll: item.data!, index: index,),
+                      ));
+                    },
                   ),
                 ),
               ),
             ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
+  }
 }
