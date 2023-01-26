@@ -50,8 +50,8 @@ class _HomeState extends State<Home> {
               Container(
                 width: double.infinity,
                 height: 150,
-                child: FutureBuilder<List<AlbumModel>>(
-                  future: SongsAlbum(),
+                child: FutureBuilder<List<SongModel>>(
+                  future: AllSongs(),
                   builder: (context, item) {
                     if (item.data == null)
                       return Center(
@@ -119,15 +119,6 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Future<List<AlbumModel>> SongsAlbum() {
-    return _audioQuery.queryAlbums(
-      sortType: AlbumSortType.ALBUM,
-      orderType: OrderType.ASC_OR_SMALLER,
-      uriType: UriType.EXTERNAL,
-      ignoreCase: true,
-    );
-  }
-
   Future<List<SongModel>> AllSongs() {
     return _audioQuery.querySongs(
       sortType: SongSortType.TITLE,
@@ -138,7 +129,7 @@ class _HomeState extends State<Home> {
   }
 
   Widget buildCardAlbum(
-      BuildContext context, int index, AsyncSnapshot<List<AlbumModel>> item) {
+      BuildContext context, int index, AsyncSnapshot<List<SongModel>> item) {
     return Container(
       child: Column(
         children: [
@@ -151,7 +142,7 @@ class _HomeState extends State<Home> {
                   child: InkWell(
                     child: QueryArtworkWidget(
                       id: item.data![index].id,
-                      type: ArtworkType.ALBUM,
+                      type: ArtworkType.AUDIO,
                     ),
                     onTap: () {
                       Navigator.of(context).push(

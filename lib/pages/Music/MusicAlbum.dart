@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+
 class MusicAlbum extends StatefulWidget {
-  final List<AlbumModel> MusicArtistAll;
+  final List<SongModel> MusicArtistAll;
   final int index;
   const MusicAlbum(
       {super.key, required this.MusicArtistAll, required this.index});
@@ -11,14 +12,30 @@ class MusicAlbum extends StatefulWidget {
 }
 
 class _MusicAlbumState extends State<MusicAlbum> {
-OnAudioQuery audioQuery = OnAudioQuery();
-  List<AlbumModel> songs = [];
+  OnAudioQuery audioQuery = OnAudioQuery();
+  List<SongModel> songs = [];
   int currentIndex = 0;
   @override
   void initState() {
     super.initState();
     songs.clear();
     songs = widget.MusicArtistAll;
+  }
+
+  Future<List<SongModel>> SongsAlbum() {
+    return audioQuery.queryAudiosFrom(
+      AudiosFromType.ALBUM_ID,
+      songs[currentIndex].id,
+      sortType: SongSortType.SIZE,
+      orderType: OrderType.ASC_OR_SMALLER,
+      ignoreCase: true,
+    );
+
+    audioQuery.queryWithFilters(
+        "Sam Smith", 
+        WithFiltersType.AUDIOS,
+        args: AudiosArgs.ARTIST,
+    );
   }
 
   @override
@@ -47,7 +64,7 @@ OnAudioQuery audioQuery = OnAudioQuery();
                     padding: const EdgeInsets.all(10),
                     child: QueryArtworkWidget(
                       id: songs[currentIndex].id,
-                      type: ArtworkType.ALBUM,
+                      type: ArtworkType.AUDIO,
                     ),
                   ),
                 ),
@@ -61,11 +78,12 @@ OnAudioQuery audioQuery = OnAudioQuery();
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          songs[currentIndex].album,
+                          songs[currentIndex].title,
                           style: TextStyle(
                               fontSize: 25, fontWeight: FontWeight.bold),
                         ),
-                        Text('${songs[currentIndex].artist}',
+                        Text(
+                          '${songs[currentIndex].artist}',
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
                         ),
@@ -76,16 +94,29 @@ OnAudioQuery audioQuery = OnAudioQuery();
               ],
             ),
             Expanded(
-              child: ListView.builder(
-                itemCount: songs[currentIndex].numOfSongs,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(songs[currentIndex].album),
-                    leading: const CircleAvatar(child: Icon(Icons.music_note)),
-                    onTap: () {
-                      setState(() {
-                        print(songs[currentIndex]);
-                      });
+              child: FutureBuilder<List<SongModel>>(
+                future: SongsAlbum(),
+                builder: (context, item) {
+                  if (item.data == null)
+                    return Center(
+                      child: Container(
+                          width: 100,
+                          height: 100,
+                          child: CircularProgressIndicator()),
+                    );
+                  if (item.data!.isEmpty) return const Text("Nothing found!");
+                  return ListView.builder(
+                    itemCount: item.data!.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(item.data![index].title ?? "No Artist"),
+                        subtitle: Text(item.data![index].displayName ?? ""),
+                        leading: QueryArtworkWidget(
+                          id: item.data![index].id,
+                          type: ArtworkType.AUDIO,
+                        ),
+                        onTap: () {},
+                      );
                     },
                   );
                 },
