@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:forixplayer/pages/Music/MusicAlbum.dart';
 import 'package:forixplayer/pages/Music/MusicAll.dart';
-import 'package:forixplayer/pages/Music/MusicArtist.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class Home extends StatefulWidget {
@@ -40,11 +40,18 @@ class _HomeState extends State<Home> {
                   ),
                 ),
               ),
+              Text(
+                "Álbum",
+                style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.blue,
+                    fontWeight: FontWeight.bold),
+              ),
               Container(
                 width: double.infinity,
                 height: 150,
-                child: FutureBuilder<List<ArtistModel>>(
-                  future: SoundArtist(),
+                child: FutureBuilder<List<AlbumModel>>(
+                  future: SongsAlbum(),
                   builder: (context, item) {
                     if (item.data == null)
                       return Center(
@@ -62,7 +69,7 @@ class _HomeState extends State<Home> {
                         width: 12,
                       ),
                       itemBuilder: (context, index) {
-                        return buildCardArtist(context, index, item);
+                        return buildCardAlbum(context, index, item);
                       },
                     );
                   },
@@ -73,7 +80,7 @@ class _HomeState extends State<Home> {
               ),
               Expanded(
                 child: FutureBuilder<List<SongModel>>(
-                  future: SoundInternalExternal(),
+                  future: AllSongs(),
                   builder: (context, item) {
                     if (item.data == null)
                       return Center(
@@ -112,24 +119,26 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Future<List<ArtistModel>> SoundArtist() {
-    return _audioQuery.queryArtists(
+  Future<List<AlbumModel>> SongsAlbum() {
+    return _audioQuery.queryAlbums(
+      sortType: AlbumSortType.ALBUM,
       orderType: OrderType.ASC_OR_SMALLER,
-      uriType: UriType.INTERNAL,
+      uriType: UriType.EXTERNAL,
       ignoreCase: true,
     );
   }
 
-  Future<List<SongModel>> SoundInternalExternal() {
+  Future<List<SongModel>> AllSongs() {
     return _audioQuery.querySongs(
+      sortType: SongSortType.TITLE,
       orderType: OrderType.ASC_OR_SMALLER,
-      uriType: UriType.INTERNAL,
+      uriType: UriType.EXTERNAL,
       ignoreCase: true,
     );
   }
 
-  Widget buildCardArtist(
-      BuildContext context, int index, AsyncSnapshot<List<ArtistModel>> item) {
+  Widget buildCardAlbum(
+      BuildContext context, int index, AsyncSnapshot<List<AlbumModel>> item) {
     return Container(
       child: Column(
         children: [
@@ -142,12 +151,17 @@ class _HomeState extends State<Home> {
                   child: InkWell(
                     child: QueryArtworkWidget(
                       id: item.data![index].id,
-                      type: ArtworkType.AUDIO,
+                      type: ArtworkType.ALBUM,
                     ),
                     onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => MusicArtist(MusicArtistAll: item.data!, index: index,),
-                      ));
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => MusicAlbum(
+                            MusicArtistAll: item.data!,
+                            index: index,
+                          ),
+                        ),
+                      );
                     },
                   ),
                 ),

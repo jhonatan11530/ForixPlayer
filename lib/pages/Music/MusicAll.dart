@@ -61,7 +61,7 @@ class _MusicState extends State<Music> {
           scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255)),
       home: Scaffold(
         appBar: AppBar(
-          backgroundColor: Color.fromARGB(100, 114, 114, 114),
+          backgroundColor: const Color.fromARGB(100, 114, 114, 114),
           leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -81,21 +81,19 @@ class _MusicState extends State<Music> {
                 type: ArtworkType.AUDIO,
               ),
             ),
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width / 1.5,
               height: 30,
               child: _buildComplexMarquee(currentSongTitle),
             ),
-            Container(
-              child: Slider(
-                value: position.inSeconds.toDouble(),
-                max: duration.inSeconds.toDouble() + 0.0,
-                onChanged: (value) {
-                  setState(() {
-                    advancedPlayer.seek(Duration(seconds: value.toInt()));
-                  });
-                },
-              ),
+            Slider(
+              value: position.inSeconds.toDouble(),
+              max: duration.inSeconds.toDouble() + 0.0,
+              onChanged: (value) {
+                setState(() {
+                  advancedPlayer.seek(Duration(seconds: value.toInt()));
+                });
+              },
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -106,10 +104,14 @@ class _MusicState extends State<Music> {
                     Text(FormatTime(duration)),
                   ]),
             ),
-            Container(
-              child: Row(
+            Expanded(
+              child: Container(
+                color: const Color.fromARGB(100, 114, 114, 114),
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: AudioControl(context)),
+                  children: AudioControl(context),
+                ),
+              ),
             ),
           ],
         ),
@@ -144,11 +146,14 @@ class _MusicState extends State<Music> {
 
   List<Widget> AudioControl(BuildContext context) {
     return <Widget>[
-      Expanded(
-          child: IconButton(
-        iconSize: MediaQuery.of(context).size.height / 20,
+      IconButton(
+        padding: const EdgeInsets.all(8.0),
+        iconSize: 32,
         icon: (iconChangeshuffle == false)
-            ? Icon(Icons.shuffle, color: Colors.grey)
+            ? Icon(
+                Icons.shuffle,
+                color: Colors.grey,
+              )
             : Icon(Icons.shuffle),
         onPressed: () {
           setState(() {
@@ -167,80 +172,76 @@ class _MusicState extends State<Music> {
             }
           });
         },
-      )),
-      Expanded(
-        child: IconButton(
-          iconSize: MediaQuery.of(context).size.height / 15,
-          icon: Icon(Icons.skip_previous),
-          onPressed: () {
-            setState(() {
-              advancedPlayer.seekToPrevious();
-            });
-          },
-        ),
       ),
-      Expanded(
-        child: IconButton(
-          iconSize: MediaQuery.of(context).size.height / 10,
-          icon: Icon(
-              (iconChange == false) ? Icons.play_arrow : Icons.pause_sharp),
-          onPressed: () {
-            setState(() {
-              switch (iconChange) {
-                case false:
-                  advancedPlayer.play();
-                  iconChange = !iconChange;
-                  break;
-                case true:
-                  advancedPlayer.stop();
-                  iconChange = !iconChange;
-                  break;
-                default:
-              }
-            });
-          },
-        ),
+      IconButton(
+        padding: const EdgeInsets.all(8.0),
+        iconSize: 48,
+        icon: Icon(Icons.skip_previous),
+        onPressed: () {
+          setState(() {
+            advancedPlayer.seekToPrevious();
+          });
+        },
       ),
-      Expanded(
-        child: IconButton(
-          iconSize: MediaQuery.of(context).size.height / 15,
-          icon: Icon(Icons.skip_next),
-          onPressed: () {
-            setState(() {
-              advancedPlayer.seekToNext();
-            });
-          },
-        ),
+      IconButton(
+        padding: const EdgeInsets.all(8.0),
+        iconSize: 64,
+        icon:
+            Icon((iconChange == false) ? Icons.play_arrow : Icons.pause_sharp),
+        onPressed: () {
+          setState(() {
+            switch (iconChange) {
+              case false:
+                advancedPlayer.play();
+                iconChange = !iconChange;
+                break;
+              case true:
+                advancedPlayer.stop();
+                iconChange = !iconChange;
+                break;
+              default:
+            }
+          });
+        },
       ),
-      Expanded(
-        child: IconButton(
-          iconSize: MediaQuery.of(context).size.height / 20,
-          icon: Icon((iconChangeRepat == 0)
-              ? Icons.repeat
-              : (iconChangeRepat == 1)
-                  ? Icons.repeat_on_rounded
-                  : (iconChangeRepat == 2)
-                      ? Icons.repeat_one
-                      : null),
-          onPressed: () {
-            setState(() {
-              switch (iconChangeRepat) {
-                case 0:
-                  iconChangeRepat = 1;
-                  advancedPlayer.setLoopMode(LoopMode.all);
-                  break;
-                case 1:
-                  iconChangeRepat = 2;
-                  advancedPlayer.setLoopMode(LoopMode.one);
-                  break;
-                case 2:
-                  iconChangeRepat = 0;
-                  advancedPlayer.setLoopMode(LoopMode.off);
-                  break;
-              }
-            });
-          },
-        ),
+      IconButton(
+        padding: const EdgeInsets.all(8.0),
+        iconSize: 48,
+        icon: Icon(Icons.skip_next),
+        onPressed: () {
+          setState(() {
+            advancedPlayer.seekToNext();
+          });
+        },
+      ),
+      IconButton(
+        padding: const EdgeInsets.all(8.0),
+        iconSize: 32,
+        icon: Icon((iconChangeRepat == 0)
+            ? Icons.repeat
+            : (iconChangeRepat == 1)
+                ? Icons.repeat_on_rounded
+                : (iconChangeRepat == 2)
+                    ? Icons.repeat_one
+                    : null),
+        onPressed: () {
+          setState(() {
+            switch (iconChangeRepat) {
+              case 0:
+                iconChangeRepat = 1;
+                advancedPlayer.setLoopMode(LoopMode.all);
+                break;
+              case 1:
+                iconChangeRepat = 2;
+                advancedPlayer.setLoopMode(LoopMode.one);
+                break;
+              case 2:
+                iconChangeRepat = 0;
+                advancedPlayer.setLoopMode(LoopMode.off);
+                break;
+            }
+          });
+        },
       ),
     ];
   }
@@ -248,11 +249,17 @@ class _MusicState extends State<Music> {
   ConcatenatingAudioSource createPlaylist(List<SongModel> songs) {
     List<AudioSource> sources = [];
     for (var song in songs) {
-      sources.add(AudioSource.uri(Uri.parse(song.uri!),
+      sources.add(
+        AudioSource.uri(
+          Uri.parse(song.uri!),
           tag: MediaItem(
-              id: '${song.id}',
-              title: song.title,
-              artUri: Uri.parse(song.uri!))));
+            id: '${song.id}',
+            title: song.title,
+            album: song.album,
+            artUri: Uri.parse(song.uri!),
+          ),
+        ),
+      );
     }
     return ConcatenatingAudioSource(children: sources);
   }
@@ -265,5 +272,4 @@ class _MusicState extends State<Music> {
       }
     });
   }
-
 }
