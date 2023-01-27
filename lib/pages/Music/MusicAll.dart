@@ -77,6 +77,7 @@ class _MusicState extends State<Music> {
               width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.all(20),
               child: QueryArtworkWidget(
+                keepOldArtwork: true,
                 id: songs[currentIndex].id,
                 type: ArtworkType.AUDIO,
               ),

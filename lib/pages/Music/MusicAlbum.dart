@@ -12,7 +12,7 @@ class MusicAlbum extends StatefulWidget {
 }
 
 class _MusicAlbumState extends State<MusicAlbum> {
-  OnAudioQuery audioQuery = OnAudioQuery();
+  final OnAudioQuery _audioQuery = OnAudioQuery();
   List<SongModel> songs = [];
   int currentIndex = 0;
   @override
@@ -23,18 +23,12 @@ class _MusicAlbumState extends State<MusicAlbum> {
   }
 
   Future<List<SongModel>> SongsAlbum() {
-    return audioQuery.queryAudiosFrom(
-      AudiosFromType.ALBUM_ID,
-      songs[currentIndex].id,
-      sortType: SongSortType.SIZE,
+    return _audioQuery.queryAudiosFrom(
+      AudiosFromType.ARTIST,
+      '${songs[currentIndex].artist}',
+      sortType: SongSortType.TITLE,
       orderType: OrderType.ASC_OR_SMALLER,
       ignoreCase: true,
-    );
-
-    audioQuery.queryWithFilters(
-        "Sam Smith", 
-        WithFiltersType.AUDIOS,
-        args: AudiosArgs.ARTIST,
     );
   }
 
