@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forixplayer/pages/Music/MusicAll.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class MusicAlbum extends StatefulWidget {
@@ -14,7 +15,7 @@ class MusicAlbum extends StatefulWidget {
 class _MusicAlbumState extends State<MusicAlbum> {
   final OnAudioQuery _audioQuery = OnAudioQuery();
   List<SongModel> songs = [];
-  int currentIndex = 0;
+
   @override
   void initState() {
     super.initState();
@@ -24,8 +25,8 @@ class _MusicAlbumState extends State<MusicAlbum> {
 
   Future<List<SongModel>> SongsAlbum() {
     return _audioQuery.queryAudiosFrom(
-      AudiosFromType.ARTIST,
-      '${songs[currentIndex].artist}',
+      AudiosFromType.ALBUM,
+      '${songs[widget.index].album}',
       sortType: SongSortType.TITLE,
       orderType: OrderType.ASC_OR_SMALLER,
       ignoreCase: true,
@@ -44,48 +45,65 @@ class _MusicAlbumState extends State<MusicAlbum> {
               },
               icon: Icon(Icons.arrow_back)),
           elevation: 0,
-          title: Text('Album ${songs[currentIndex].artist}'),
+          title: Text('Album ${songs[widget.index].artist}'),
         ),
         body: Column(
           children: [
-            Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * 0.2,
-                    width: MediaQuery.of(context).size.width,
-                    padding: const EdgeInsets.all(10),
-                    child: QueryArtworkWidget(
-                      id: songs[currentIndex].id,
-                      type: ArtworkType.AUDIO,
+            Padding(
+              padding: new EdgeInsets.all(15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: new EdgeInsets.symmetric(horizontal: 10),
+                    child: Expanded(
+                      child: Container(
+                        height: 150,
+                        width: 150,
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        child: QueryArtworkWidget(
+                          artworkBorder: BorderRadius.circular(0),
+                          artworkQuality: FilterQuality.high,
+                          keepOldArtwork: true,
+                          id: songs[widget.index].id,
+                          type: ArtworkType.AUDIO,
+                          nullArtworkWidget: Icon(Icons.image_not_supported,
+                              size: 62, color: Colors.grey),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    height: 150,
-                    width: 150,
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          songs[currentIndex].title,
-                          style: TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.bold),
+                  Padding(
+                    padding: new EdgeInsets.symmetric(horizontal: 0),
+                    child: Expanded(
+                      child: Container(
+                        height: 150,
+                        width: 150,
+                        padding: const EdgeInsets.symmetric(horizontal: 0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              textAlign: TextAlign.center,
+                              songs[widget.index].title,
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              'Artista ${songs[widget.index].artist}',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey),
+                            ),
+                          ],
                         ),
-                        Text(
-                          '${songs[currentIndex].artist}',
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             Expanded(
               child: FutureBuilder<List<SongModel>>(
@@ -106,10 +124,19 @@ class _MusicAlbumState extends State<MusicAlbum> {
                         title: Text(item.data![index].title ?? "No Artist"),
                         subtitle: Text(item.data![index].displayName ?? ""),
                         leading: QueryArtworkWidget(
+                          artworkQuality: FilterQuality.high,
+                          keepOldArtwork: true,
                           id: item.data![index].id,
                           type: ArtworkType.AUDIO,
+                          nullArtworkWidget: Icon(Icons.image_not_supported,
+                              size: 48, color: Colors.grey),
                         ),
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) =>
+                                Music(MusicSongs: item.data!, index: index),
+                          ));
+                        },
                       );
                     },
                   );

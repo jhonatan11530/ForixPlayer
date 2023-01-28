@@ -77,9 +77,13 @@ class _MusicState extends State<Music> {
               width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.all(20),
               child: QueryArtworkWidget(
+                artworkBorder: BorderRadius.circular(0),
+                artworkQuality: FilterQuality.high,
                 keepOldArtwork: true,
                 id: songs[currentIndex].id,
                 type: ArtworkType.AUDIO,
+                nullArtworkWidget: Icon(Icons.image_not_supported,
+                    size: 120, color: Colors.grey),
               ),
             ),
             SizedBox(

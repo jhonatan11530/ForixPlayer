@@ -40,13 +40,50 @@ class _HomeState extends State<Home> {
                   ),
                 ),
               ),
-              Text(
-                "Álbum",
-                style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.blue,
-                    fontWeight: FontWeight.bold),
+              /*
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: Expanded(
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                        ),
+                        onPressed: () {},
+                        child: Text(
+                          "Mirar Álbumes",
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: Expanded(
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                        ),
+                        onPressed: () {},
+                        child: Text(
+                          "Mirar Artistas",
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
+              */
               Container(
                 width: double.infinity,
                 height: 150,
@@ -97,8 +134,11 @@ class _HomeState extends State<Home> {
                           title: Text(item.data![index].title ?? "No Artist"),
                           subtitle: Text(item.data![index].displayName ?? ""),
                           leading: QueryArtworkWidget(
+                            artworkQuality: FilterQuality.high,
                             id: item.data![index].id,
                             type: ArtworkType.AUDIO,
+                            nullArtworkWidget: Icon(Icons.image_not_supported,
+                                size: 48, color: Colors.grey),
                           ),
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(
@@ -141,8 +181,12 @@ class _HomeState extends State<Home> {
                 child: Material(
                   child: InkWell(
                     child: QueryArtworkWidget(
+                      artworkBorder: BorderRadius.circular(0),
+                      artworkQuality: FilterQuality.high,
                       id: item.data![index].id,
                       type: ArtworkType.AUDIO,
+                      nullArtworkWidget: Icon(Icons.image_not_supported,
+                          size: 62, color: Colors.grey),
                     ),
                     onTap: () {
                       Navigator.of(context).push(
