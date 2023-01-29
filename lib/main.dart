@@ -9,9 +9,11 @@ Future<void> main() async {
     androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
     androidNotificationChannelName: 'Audio playback',
     androidNotificationOngoing: true,
+    androidStopForegroundOnPause: true,
   );
   runApp(const ForixPlayer());
 }
+
 class ForixPlayer extends StatefulWidget {
   const ForixPlayer({super.key});
 
@@ -46,7 +48,6 @@ class _ForixPlayerState extends State<ForixPlayer> {
       bool permissionStatus = await _audioQuery.permissionsStatus();
       if (!permissionStatus) {
         await _audioQuery.permissionsRequest();
-
       }
       //ensure build method is called
       setState(() {});

@@ -37,10 +37,8 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   just_audio: ^0.9.31
-  marquee: ^2.2.3
   on_audio_query: ^2.6.1
   just_audio_background: ^0.0.1-beta.9
-  rxdart: ^0.27.7
   package_info_plus: ^3.0.2
   marquee_widget: ^1.2.0
 
