@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:forixplayer/pages/LocalMusic.dart';
 import 'package:forixplayer/pages/Music/MusicAll.dart';
+import 'package:forixplayer/pages/home.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class MusicAlbum extends StatefulWidget {
@@ -144,6 +146,13 @@ class _MusicAlbumState extends State<MusicAlbum> {
               ),
             ),
           ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          backgroundColor: Colors.blue,
+          child: const Icon(Icons.arrow_back),
         ),
       ),
     );

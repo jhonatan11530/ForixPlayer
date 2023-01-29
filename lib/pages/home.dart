@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:forixplayer/pages/LocalMusic.dart';
 import 'package:forixplayer/pages/Music/MusicAlbum.dart';
-import 'package:forixplayer/pages/Music/MusicAll.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class Home extends StatefulWidget {
@@ -40,116 +40,78 @@ class _HomeState extends State<Home> {
                   ),
                 ),
               ),
-              /*
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: Expanded(
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                        ),
-                        onPressed: () {},
-                        child: Text(
-                          "Mirar Álbumes",
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: Expanded(
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                        ),
-                        onPressed: () {},
-                        child: Text(
-                          "Mirar Artistas",
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              */
-              Container(
-                width: double.infinity,
-                height: 150,
-                child: FutureBuilder<List<SongModel>>(
-                  future: AllSongs(),
-                  builder: (context, item) {
-                    if (item.data == null)
-                      return Center(
-                        child: Container(
-                            width: 100,
-                            height: 100,
-                            child: CircularProgressIndicator()),
-                      );
-                    if (item.data!.isEmpty) return const Text("Nothing found!");
-                    return ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.all(10),
-                      itemCount: item.data!.length,
-                      separatorBuilder: (context, index) => SizedBox(
-                        width: 12,
-                      ),
-                      itemBuilder: (context, index) {
-                        return buildCardAlbum(context, index, item);
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.all(4),
+                  child: Card(
+                    child: new InkWell(
+                      onTap: () {
+                        print("tapped");
                       },
-                    );
-                  },
+                      child: Stack(
+                        children: <Widget>[
+                          Container(
+                            alignment: Alignment.center,
+                            child: Image.asset(
+                              "assets/YouTube-Music-Logo.png",
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Container(
+                            child: Align(
+                              alignment: Alignment(0, -0.50),
+                              child: Text(
+                                "Escuchar Musica en ",
+                                style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 25),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
-              SizedBox(
-                height: 10,
-              ),
               Expanded(
-                child: FutureBuilder<List<SongModel>>(
-                  future: AllSongs(),
-                  builder: (context, item) {
-                    if (item.data == null)
-                      return Center(
-                        child: Container(
-                            width: 100,
-                            height: 100,
-                            child: CircularProgressIndicator()),
-                      );
-                    if (item.data!.isEmpty) return const Text("Nothing found!");
-                    return ListView.builder(
-                      itemCount: item.data!.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(item.data![index].title ?? "No Artist"),
-                          subtitle: Text(item.data![index].displayName ?? ""),
-                          leading: QueryArtworkWidget(
-                            artworkQuality: FilterQuality.high,
-                            id: item.data![index].id,
-                            type: ArtworkType.AUDIO,
-                            nullArtworkWidget: Icon(Icons.image_not_supported,
-                                size: 48, color: Colors.grey),
-                          ),
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) =>
-                                  Music(MusicSongs: item.data!, index: index),
-                            ));
-                          },
+                child: Padding(
+                  padding: EdgeInsets.all(4),
+                  child: Card(
+                    child: new InkWell(
+                      onTap: () {
+                        print("tapped");
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => LocalMusic()),
                         );
                       },
-                    );
-                  },
+                      child: Stack(
+                        children: <Widget>[
+                          Container(
+                            alignment: Alignment.center,
+                            child: Icon(
+                              Icons.music_note,
+                              size: 120,
+                            ),
+                          ),
+                          Container(
+                            child: Align(
+                              alignment: Alignment(0, -0.50),
+                              child: Text(
+                                "Escuchar Musica Local ",
+                                style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 25),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ],
