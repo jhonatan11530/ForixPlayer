@@ -38,24 +38,24 @@ class _MusicAlbumState extends State<MusicAlbum> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          backgroundColor: Color.fromARGB(100, 114, 114, 114),
+          backgroundColor: Colors.blue,
           leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              icon: Icon(Icons.arrow_back)),
+              icon: const Icon(Icons.arrow_back)),
           elevation: 0,
           title: Text('Album ${songs[widget.index].artist}'),
         ),
         body: Column(
           children: [
             Padding(
-              padding: new EdgeInsets.all(15),
+              padding: const EdgeInsets.all(15),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Padding(
-                    padding: new EdgeInsets.symmetric(horizontal: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Expanded(
                       child: Container(
                         height: 150,
@@ -67,14 +67,16 @@ class _MusicAlbumState extends State<MusicAlbum> {
                           keepOldArtwork: true,
                           id: songs[widget.index].id,
                           type: ArtworkType.AUDIO,
-                          nullArtworkWidget: Icon(Icons.image_not_supported,
-                              size: 62, color: Colors.grey),
+                          nullArtworkWidget: const Icon(
+                              Icons.image_not_supported,
+                              size: 62,
+                              color: Colors.grey),
                         ),
                       ),
                     ),
                   ),
                   Padding(
-                    padding: new EdgeInsets.symmetric(horizontal: 0),
+                    padding: const EdgeInsets.symmetric(horizontal: 0),
                     child: Expanded(
                       child: Container(
                         height: 150,
@@ -86,13 +88,13 @@ class _MusicAlbumState extends State<MusicAlbum> {
                             Text(
                               textAlign: TextAlign.center,
                               songs[widget.index].title,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.bold),
                             ),
                             Text(
                               'Artista ${songs[widget.index].artist}',
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.grey),
@@ -109,13 +111,14 @@ class _MusicAlbumState extends State<MusicAlbum> {
               child: FutureBuilder<List<SongModel>>(
                 future: SongsAlbum(),
                 builder: (context, item) {
-                  if (item.data == null)
+                  if (item.data == null) {
                     return Center(
                       child: Container(
                           width: 100,
                           height: 100,
-                          child: CircularProgressIndicator()),
+                          child: const CircularProgressIndicator()),
                     );
+                  }
                   if (item.data!.isEmpty) return const Text("Nothing found!");
                   return ListView.builder(
                     itemCount: item.data!.length,
@@ -128,8 +131,10 @@ class _MusicAlbumState extends State<MusicAlbum> {
                           keepOldArtwork: true,
                           id: item.data![index].id,
                           type: ArtworkType.AUDIO,
-                          nullArtworkWidget: Icon(Icons.image_not_supported,
-                              size: 48, color: Colors.grey),
+                          nullArtworkWidget: const Icon(
+                              Icons.image_not_supported,
+                              size: 48,
+                              color: Colors.grey),
                         ),
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(

@@ -35,7 +35,7 @@ class _ForixPlayerState extends State<ForixPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: Scaffold(
         bottomNavigationBar: MyNavigationBar(),
       ),

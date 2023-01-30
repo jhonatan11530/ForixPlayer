@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:forixplayer/pages/LocalMusic.dart';
 import 'package:forixplayer/pages/Music/MusicAlbum.dart';
+
 import 'package:on_audio_query/on_audio_query.dart';
 
 class Home extends StatefulWidget {
@@ -13,38 +16,71 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final OnAudioQuery _audioQuery = OnAudioQuery();
   List<SongModel> songs = [];
+  String _Today = '';
+  String Descripcion = "Como Quieres Empezar";
+  @override
+  void initState() {
+    super.initState();
+    Timer.periodic(const Duration(seconds: 1), (Timer t) => _getGreeting());
+  }
+
+  void _getGreeting() {
+    var hour = DateTime.now().hour;
+    if (hour < 12) {
+      setState(() {
+        _Today = '¡Buenos días!';
+      });
+    } else if (hour < 18) {
+      setState(() {
+        _Today = '¡Buenas tardes!';
+      });
+    } else {
+      setState(() {
+        _Today = '¡Buenas noches!';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xff3f51b5),Color(0xff03a9f4)],
+            ),
+          ),
           child: Column(
             children: [
-              Container(
+              SizedBox(
                 width: double.infinity,
                 height: 120,
-                child: Padding(
-                  padding:
-                      new EdgeInsets.symmetric(horizontal: 0, vertical: 30),
-                  child: Row(
-                    children: [
-                      Padding(padding: EdgeInsets.all(15)),
-                      Text(
-                        "Tu Musica",
-                        style: TextStyle(
-                            fontSize: 40,
-                            color: Colors.blue,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      _Today,
+                      style: const TextStyle(
+                          fontSize: 35,
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      Descripcion,
+                      style: const TextStyle(
+                          color: Colors.grey, fontWeight: FontWeight.bold),
+                    ),
+                  ],
                 ),
               ),
               Expanded(
                 child: Padding(
-                  padding: EdgeInsets.all(4),
+                  padding: const EdgeInsets.all(4),
                   child: Card(
-                    child: new InkWell(
+                    child: InkWell(
                       onTap: () {
                         print("tapped");
                       },
@@ -58,16 +94,14 @@ class _HomeState extends State<Home> {
                               fit: BoxFit.cover,
                             ),
                           ),
-                          Container(
-                            child: Align(
-                              alignment: Alignment(0, -0.50),
-                              child: Text(
-                                "Escuchar Musica en ",
-                                style: TextStyle(
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 25),
-                              ),
+                          const Align(
+                            alignment: Alignment(0, -0.70),
+                            child: Text(
+                              "Escuchar Musica en ",
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 25),
                             ),
                           ),
                         ],
@@ -78,9 +112,9 @@ class _HomeState extends State<Home> {
               ),
               Expanded(
                 child: Padding(
-                  padding: EdgeInsets.all(4),
+                  padding: const EdgeInsets.all(4),
                   child: Card(
-                    child: new InkWell(
+                    child: InkWell(
                       onTap: () {
                         print("tapped");
                         Navigator.of(context).push(
@@ -91,21 +125,19 @@ class _HomeState extends State<Home> {
                         children: <Widget>[
                           Container(
                             alignment: Alignment.center,
-                            child: Icon(
+                            child: const Icon(
                               Icons.music_note,
                               size: 120,
                             ),
                           ),
-                          Container(
-                            child: Align(
-                              alignment: Alignment(0, -0.50),
-                              child: Text(
-                                "Escuchar Musica Local ",
-                                style: TextStyle(
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 25),
-                              ),
+                          const Align(
+                            alignment: Alignment(0, -0.70),
+                            child: Text(
+                              "Escuchar Musica En el Equipo",
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 25),
                             ),
                           ),
                         ],
@@ -147,7 +179,7 @@ class _HomeState extends State<Home> {
                       artworkQuality: FilterQuality.high,
                       id: item.data![index].id,
                       type: ArtworkType.AUDIO,
-                      nullArtworkWidget: Icon(Icons.image_not_supported,
+                      nullArtworkWidget: const Icon(Icons.image_not_supported,
                           size: 62, color: Colors.grey),
                     ),
                     onTap: () {

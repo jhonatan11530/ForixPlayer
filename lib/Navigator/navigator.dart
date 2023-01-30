@@ -12,7 +12,7 @@ class NavBarButton {
   ];
 }
 
-NavBarButton NavBar = new NavBarButton();
+NavBarButton NavBar = NavBarButton();
 ValueNotifier<int> buttonClickedTimes = ValueNotifier(0);
 
 class MyNavigationBar extends StatefulWidget {
@@ -53,7 +53,7 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
               label: 'Biblioteca',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
+              icon: const Icon(Icons.settings),
               label: 'Herramientas',
             )
           ],

@@ -63,98 +63,104 @@ class _LocalMusicState extends State<LocalMusic> {
 
   Widget Original() {
     return Scaffold(
-      body: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            height: 120,
-            child: Padding(
-              padding: new EdgeInsets.symmetric(horizontal: 0, vertical: 30),
-              child: Row(
-                children: [
-                  Padding(padding: EdgeInsets.all(15)),
-                  Text(
-                    "Tu Musica",
-                    style: TextStyle(
-                        fontSize: 40,
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ],
+      appBar: AppBar(
+        title: const Text("Tu Musica En el Dispositivo"),
+        automaticallyImplyLeading: false,
+      ),
+      body: Container(
+        /*decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xff3f51b5), Color(0xff03a9f4)],
+          ),
+        ),*/
+        child: Column(
+          children: [
+            SizedBox(
+              width: double.infinity,
+              height: 150,
+              child: FutureBuilder<List<SongModel>>(
+                future: AllSongs(),
+                builder: (context, item) {
+                  if (item.data == null) {
+                    return Center(
+                      child: Container(
+                          width: 100,
+                          height: 100,
+                          child: CircularProgressIndicator()),
+                    );
+                  }
+                  if (item.data!.isEmpty) {
+                    return const Text("Nothing found!",
+                        style: TextStyle(color: Colors.black));
+                  }
+                  return ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.all(10),
+                    itemCount: item.data!.length,
+                    separatorBuilder: (context, index) => const SizedBox(
+                      width: 12,
+                    ),
+                    itemBuilder: (context, index) {
+                      return buildCardAlbum(context, index, item);
+                    },
+                  );
+                },
               ),
             ),
-          ),
-          Container(
-            width: double.infinity,
-            height: 150,
-            child: FutureBuilder<List<SongModel>>(
-              future: AllSongs(),
-              builder: (context, item) {
-                if (item.data == null)
-                  return Center(
-                    child: Container(
-                        width: 100,
-                        height: 100,
-                        child: CircularProgressIndicator()),
-                  );
-                if (item.data!.isEmpty) return const Text("Nothing found!");
-                return ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.all(10),
-                  itemCount: item.data!.length,
-                  separatorBuilder: (context, index) => SizedBox(
-                    width: 12,
-                  ),
-                  itemBuilder: (context, index) {
-                    return buildCardAlbum(context, index, item);
-                  },
-                );
-              },
+            const SizedBox(
+              height: 10,
             ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Expanded(
-            child: FutureBuilder<List<SongModel>>(
-              future: AllSongs(),
-              builder: (context, item) {
-                if (item.data == null)
-                  return Center(
-                    child: Container(
-                        width: 100,
-                        height: 100,
-                        child: CircularProgressIndicator()),
-                  );
-                if (item.data!.isEmpty) return const Text("Nothing found!");
-                return ListView.builder(
-                  itemCount: item.data!.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(item.data![index].title ?? "No Artist"),
-                      subtitle: Text(item.data![index].displayName ?? ""),
-                      leading: QueryArtworkWidget(
-                        keepOldArtwork: true,
-                        artworkQuality: FilterQuality.high,
-                        id: item.data![index].id,
-                        type: ArtworkType.AUDIO,
-                        nullArtworkWidget: Icon(Icons.image_not_supported,
-                            size: 48, color: Colors.grey),
-                      ),
-                      onTap: () {
-                        setState(() {
-                          ShowView = !ShowView;
-                          songs = item.data!;
-                          _musicInit(index, item.data!);
-                        });
-                      },
+            Expanded(
+              child: FutureBuilder<List<SongModel>>(
+                future: AllSongs(),
+                builder: (context, item) {
+                  if (item.data == null) {
+                    return Center(
+                      child: Container(
+                          width: 100,
+                          height: 100,
+                          child: CircularProgressIndicator()),
                     );
-                  },
-                );
-              },
+                  }
+                  if (item.data!.isEmpty) {
+                    return const Text("Nothing found!",
+                        style: TextStyle(color: Colors.black));
+                  }
+                  return ListView.builder(
+                    itemCount: item.data!.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(item.data![index].title ?? "No Artist",
+                            style: const TextStyle(color: Colors.black)),
+                        subtitle: Text(item.data![index].displayName ?? "",
+                            style: const TextStyle(color: Colors.black)),
+                        leading: QueryArtworkWidget(
+                          keepOldArtwork: true,
+                          artworkQuality: FilterQuality.high,
+                          id: item.data![index].id,
+                          type: ArtworkType.AUDIO,
+                          nullArtworkWidget: const Icon(
+                              Icons.image_not_supported,
+                              size: 48,
+                              color: Colors.grey),
+                        ),
+                        onTap: () {
+                          setState(() {
+                            ShowView = !ShowView;
+                            songs = item.data!;
+                            _musicInit(index, item.data!);
+                          });
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -176,23 +182,23 @@ class _LocalMusicState extends State<LocalMusic> {
                 ShowView = !ShowView;
               });
             },
-            icon: Icon(Icons.keyboard_arrow_down_sharp)),
+            icon: const Icon(Icons.keyboard_arrow_down_sharp)),
         elevation: 0,
-        title: Text('${songs[currentIndex].title}'),
+        title: Text(songs[currentIndex].title),
       ),
       body: Column(
         children: [
           Container(
             height: MediaQuery.of(context).size.height * 0.5,
             width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: QueryArtworkWidget(
               artworkBorder: BorderRadius.circular(0),
               artworkQuality: FilterQuality.high,
               keepOldArtwork: true,
               id: songs[currentIndex].id,
               type: ArtworkType.AUDIO,
-              nullArtworkWidget: Icon(Icons.image_not_supported,
+              nullArtworkWidget: const Icon(Icons.image_not_supported,
                   size: 120, color: Colors.grey),
             ),
           ),
@@ -244,42 +250,40 @@ class _LocalMusicState extends State<LocalMusic> {
 
   Widget buildCardAlbum(
       BuildContext context, int index, AsyncSnapshot<List<SongModel>> item) {
-    return Container(
-      child: Column(
-        children: [
-          Expanded(
-            child: AspectRatio(
-              aspectRatio: 4 / 4,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Material(
-                  child: InkWell(
-                    child: QueryArtworkWidget(
-                      keepOldArtwork: true,
-                      artworkBorder: BorderRadius.circular(0),
-                      artworkQuality: FilterQuality.high,
-                      id: item.data![index].id,
-                      type: ArtworkType.AUDIO,
-                      nullArtworkWidget: Icon(Icons.image_not_supported,
-                          size: 62, color: Colors.grey),
-                    ),
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => MusicAlbum(
-                            MusicArtistAll: item.data!,
-                            index: index,
-                          ),
-                        ),
-                      );
-                    },
+    return Column(
+      children: [
+        Expanded(
+          child: AspectRatio(
+            aspectRatio: 4 / 4,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Material(
+                child: InkWell(
+                  child: QueryArtworkWidget(
+                    keepOldArtwork: true,
+                    artworkBorder: BorderRadius.circular(0),
+                    artworkQuality: FilterQuality.high,
+                    id: item.data![index].id,
+                    type: ArtworkType.AUDIO,
+                    nullArtworkWidget: const Icon(Icons.image_not_supported,
+                        size: 62, color: Colors.grey),
                   ),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => MusicAlbum(
+                          MusicArtistAll: item.data!,
+                          index: index,
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -298,12 +302,9 @@ class _LocalMusicState extends State<LocalMusic> {
       backDuration: const Duration(milliseconds: 5000),
       pauseDuration: const Duration(milliseconds: 2500),
       directionMarguee: DirectionMarguee.TwoDirection,
-      child: Container(
-        child: Center(
-          child: Text(title,
-              style:
-                  const TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-        ),
+      child: Text(
+        title,
+        style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -314,11 +315,11 @@ class _LocalMusicState extends State<LocalMusic> {
         padding: const EdgeInsets.all(8.0),
         iconSize: 32,
         icon: (iconChangeshuffle == false)
-            ? Icon(
+            ? const Icon(
                 Icons.shuffle,
                 color: Colors.grey,
               )
-            : Icon(Icons.shuffle),
+            : const Icon(Icons.shuffle),
         onPressed: () {
           setState(() {
             switch (iconChangeshuffle) {
@@ -340,7 +341,7 @@ class _LocalMusicState extends State<LocalMusic> {
       IconButton(
         padding: const EdgeInsets.all(8.0),
         iconSize: 48,
-        icon: Icon(Icons.skip_previous),
+        icon: const Icon(Icons.skip_previous),
         onPressed: () {
           setState(() {
             advancedPlayer.seekToPrevious();
@@ -371,7 +372,7 @@ class _LocalMusicState extends State<LocalMusic> {
       IconButton(
         padding: const EdgeInsets.all(8.0),
         iconSize: 48,
-        icon: Icon(Icons.skip_next),
+        icon: const Icon(Icons.skip_next),
         onPressed: () {
           setState(() {
             advancedPlayer.seekToNext();

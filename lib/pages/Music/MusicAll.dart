@@ -57,16 +57,14 @@ class _MusicState extends State<Music> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-          scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255)),
       home: Scaffold(
         appBar: AppBar(
-          backgroundColor: const Color.fromARGB(100, 114, 114, 114),
+          backgroundColor:Colors.blue,
           leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              icon: Icon(Icons.keyboard_arrow_down_sharp)),
+              icon: const Icon(Icons.keyboard_arrow_down_sharp)),
           elevation: 0,
           title: Text('Estas Escuchando ${songs[currentIndex].title}'),
         ),
@@ -75,14 +73,14 @@ class _MusicState extends State<Music> {
             Container(
               height: MediaQuery.of(context).size.height * 0.5,
               width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.all(20),
+              padding: const EdgeInsets.all(20),
               child: QueryArtworkWidget(
                 artworkBorder: BorderRadius.circular(0),
                 artworkQuality: FilterQuality.high,
                 keepOldArtwork: true,
                 id: songs[currentIndex].id,
                 type: ArtworkType.AUDIO,
-                nullArtworkWidget: Icon(Icons.image_not_supported,
+                nullArtworkWidget: const Icon(Icons.image_not_supported,
                     size: 120, color: Colors.grey),
               ),
             ),
@@ -111,7 +109,7 @@ class _MusicState extends State<Music> {
             ),
             Expanded(
               child: Container(
-                color: const Color.fromARGB(100, 114, 114, 114),
+                color: Colors.blue,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: AudioControl(context),
@@ -139,12 +137,9 @@ class _MusicState extends State<Music> {
       backDuration: const Duration(milliseconds: 5000),
       pauseDuration: const Duration(milliseconds: 2500),
       directionMarguee: DirectionMarguee.TwoDirection,
-      child: Container(
-        child: Center(
-          child: Text(title,
-              style:
-                  const TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-        ),
+      child: Text(
+        title,
+        style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -155,11 +150,11 @@ class _MusicState extends State<Music> {
         padding: const EdgeInsets.all(8.0),
         iconSize: 32,
         icon: (iconChangeshuffle == false)
-            ? Icon(
+            ? const Icon(
                 Icons.shuffle,
                 color: Colors.grey,
               )
-            : Icon(Icons.shuffle),
+            : const Icon(Icons.shuffle),
         onPressed: () {
           setState(() {
             switch (iconChangeshuffle) {
@@ -181,7 +176,7 @@ class _MusicState extends State<Music> {
       IconButton(
         padding: const EdgeInsets.all(8.0),
         iconSize: 48,
-        icon: Icon(Icons.skip_previous),
+        icon: const Icon(Icons.skip_previous),
         onPressed: () {
           setState(() {
             advancedPlayer.seekToPrevious();
@@ -212,7 +207,7 @@ class _MusicState extends State<Music> {
       IconButton(
         padding: const EdgeInsets.all(8.0),
         iconSize: 48,
-        icon: Icon(Icons.skip_next),
+        icon: const Icon(Icons.skip_next),
         onPressed: () {
           setState(() {
             advancedPlayer.seekToNext();
