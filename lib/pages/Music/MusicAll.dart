@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:forixplayer/Providers/ChangeTheme.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:marquee_widget/marquee_widget.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:provider/provider.dart';
 
 class Music extends StatefulWidget {
   final List<SongModel> MusicSongs;
@@ -20,7 +22,6 @@ class _MusicState extends State<Music> {
   List<SongModel> songs = [];
   String currentSongTitle = '';
   final advancedPlayer = AudioPlayer();
-
   @override
   void initState() {
     super.initState();
@@ -59,7 +60,7 @@ class _MusicState extends State<Music> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          backgroundColor:Colors.blue,
+          backgroundColor: Colors.blue,
           leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);

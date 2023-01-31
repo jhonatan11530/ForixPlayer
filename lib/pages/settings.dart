@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:forixplayer/Providers/ChangeTheme.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:provider/provider.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -31,7 +33,10 @@ class _SettingsState extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
+    final themeChangeProvider = Provider.of<ChangeTheme>(context);
+
     return MaterialApp(
+      theme: themeChangeProvider.isdarktheme ? ThemeData.dark() : ThemeData.light(),
       home: Scaffold(
         body: Column(
           children: [
@@ -70,6 +75,7 @@ class _SettingsState extends State<Settings> {
                       setState(() {
                         switch (entries[index]) {
                           case "Cambiar Tema":
+                            _showAlertTheme(context, themeChangeProvider);
                             break;
                           case "Ponte en Contacto":
                             break;
@@ -98,6 +104,38 @@ class _SettingsState extends State<Settings> {
       builder: (context) => AlertDialog(
         title: const Text("Version de la aplicacion"),
         content: Text(AppVersion),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Entendido'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showAlertTheme(BuildContext context, ChangeTheme themeChangeProvider) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Cambiar tema"),
+        content: Column(
+          children: [
+            Row(
+              children: [
+                const Text("Modo Noche"),
+                Switch(
+                  value: themeChangeProvider.isdarktheme,
+                  onChanged: (value) {
+                    themeChangeProvider.isdarktheme = value;
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
         actions: <Widget>[
           TextButton(
             child: const Text('Entendido'),

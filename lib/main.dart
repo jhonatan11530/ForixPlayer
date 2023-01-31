@@ -1,8 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:forixplayer/Navigator/navigator.dart';
+import 'package:forixplayer/Providers/ChangeTheme.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:provider/provider.dart';
 
 Future<void> main() async {
   await JustAudioBackground.init(
@@ -22,6 +24,7 @@ class ForixPlayer extends StatefulWidget {
 }
 
 class _ForixPlayerState extends State<ForixPlayer> {
+  ChangeTheme themeChangeProvider = ChangeTheme();
   final OnAudioQuery _audioQuery = OnAudioQuery();
   // primary color nabvar - second color footer - tree color theme body
   List<Color> _colorAplicacion = [Colors.blue, Colors.blue, Colors.white];
@@ -29,17 +32,35 @@ class _ForixPlayerState extends State<ForixPlayer> {
   @override
   void initState() {
     super.initState();
-
     requestStoragePermission();
+    getCurrentAppTheme();
+  }
+
+  void getCurrentAppTheme() async {
+    themeChangeProvider.isdarktheme =
+        await themeChangeProvider.darkThemePreferences.getTheme();
   }
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        bottomNavigationBar: MyNavigationBar(),
-      ),
-    );
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (value) {
+            return themeChangeProvider;
+          }),
+        ],
+        child: Consumer<ChangeTheme>(
+          builder: (context, Theme, child) {
+            return MaterialApp(
+              theme: themeChangeProvider.isdarktheme
+                  ? ThemeData.dark()
+                  : ThemeData.light(),
+              home: Scaffold(
+                bottomNavigationBar: MyNavigationBar(),
+              ),
+            );
+          },
+        ));
   }
 
   void requestStoragePermission() async {

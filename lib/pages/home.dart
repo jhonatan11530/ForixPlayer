@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:forixplayer/Providers/ChangeTheme.dart';
 import 'package:forixplayer/pages/LocalMusic.dart';
 import 'package:forixplayer/pages/Music/MusicAlbum.dart';
 
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -43,7 +45,11 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final themeChangeProvider = Provider.of<ChangeTheme>(context);
     return MaterialApp(
+      theme: themeChangeProvider.isdarktheme
+          ? ThemeData.dark()
+          : ThemeData.light(),
       home: Scaffold(
         body: Column(
           children: [

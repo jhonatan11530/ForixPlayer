@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forixplayer/Providers/ChangeTheme.dart';
 import 'package:forixplayer/pages/Music/MusicAlbum.dart';
 import 'package:forixplayer/pages/Music/MusicAll.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -17,7 +18,7 @@ class _LocalMusicState extends State<LocalMusic> with TickerProviderStateMixin {
   Duration position = Duration.zero;
   List<SongModel> songs = [];
   String currentSongTitle = '';
-
+  ChangeTheme changeTheme = new ChangeTheme();
   final OnAudioQuery _audioQuery = OnAudioQuery();
   late TabController _tabController;
   @override
@@ -29,29 +30,36 @@ class _LocalMusicState extends State<LocalMusic> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Musica En el Dispositivo'),
-        bottom: TabBar(
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Musica En el Dispositivo'),
+          bottom: TabBar(
+            controller: _tabController,
+            tabs: const <Widget>[
+              Tab(
+                text: "Musica",
+                icon: Icon(Icons.music_note),
+              ),
+              Tab(
+                text: "Álbum",
+                icon: Icon(Icons.album),
+              )
+            ],
+          ),
+        ),
+        body: TabBarView(
           controller: _tabController,
-          tabs: const <Widget>[
-            Tab(
-              text: "Musica",
-              icon: Icon(Icons.music_note),
-            ),
-            Tab(
-              text: "Álbum",
-              icon: Icon(Icons.album),
-            )
+          children: <Widget>[
+            TodaMusica(),
+            GridViewAlbum(),
           ],
         ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: <Widget>[
-          TodaMusica(),
-          GridViewAlbum(),
-        ],
+        floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Icon(Icons.arrow_back)),
       ),
     );
   }
