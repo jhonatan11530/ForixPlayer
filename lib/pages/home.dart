@@ -45,109 +45,100 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color(0xff3f51b5),Color(0xff03a9f4)],
+        body: Column(
+          children: [
+            SizedBox(
+              width: double.infinity,
+              height: 120,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    _Today,
+                    style: const TextStyle(
+                        fontSize: 35,
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    Descripcion,
+                    style: const TextStyle(
+                        color: Colors.grey, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
             ),
-          ),
-          child: Column(
-            children: [
-              SizedBox(
-                width: double.infinity,
-                height: 120,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      _Today,
-                      style: const TextStyle(
-                          fontSize: 35,
-                          color: Colors.blue,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      Descripcion,
-                      style: const TextStyle(
-                          color: Colors.grey, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(4),
-                  child: Card(
-                    child: InkWell(
-                      onTap: () {
-                        print("tapped");
-                      },
-                      child: Stack(
-                        children: <Widget>[
-                          Container(
-                            alignment: Alignment.center,
-                            child: Image.asset(
-                              "assets/YouTube-Music-Logo.png",
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Card(
+                  child: InkWell(
+                    onTap: () {
+                      print("tapped");
+                    },
+                    child: Stack(
+                      children: <Widget>[
+                        Container(
+                          alignment: Alignment.center,
+                          child: Image.asset(
+                            "assets/YouTube-Music-Logo.png",
+                            width: double.infinity,
+                            fit: BoxFit.cover,
                           ),
-                          const Align(
-                            alignment: Alignment(0, -0.70),
-                            child: Text(
-                              "Escuchar Musica en ",
-                              style: TextStyle(
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 25),
-                            ),
+                        ),
+                        const Align(
+                          alignment: Alignment(0, -0.70),
+                          child: Text(
+                            "Escuchar Musica en ",
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 25),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(4),
-                  child: Card(
-                    child: InkWell(
-                      onTap: () {
-                        print("tapped");
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => LocalMusic()),
-                        );
-                      },
-                      child: Stack(
-                        children: <Widget>[
-                          Container(
-                            alignment: Alignment.center,
-                            child: const Icon(
-                              Icons.music_note,
-                              size: 120,
-                            ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Card(
+                  child: InkWell(
+                    onTap: () {
+                      print("tapped");
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => LocalMusic()),
+                      );
+                    },
+                    child: Stack(
+                      children: <Widget>[
+                        Container(
+                          alignment: Alignment.center,
+                          child: const Icon(
+                            Icons.music_note,
+                            size: 120,
                           ),
-                          const Align(
-                            alignment: Alignment(0, -0.70),
-                            child: Text(
-                              "Escuchar Musica En el Equipo",
-                              style: TextStyle(
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 25),
-                            ),
+                        ),
+                        const Align(
+                          alignment: Alignment(0, -0.70),
+                          child: Text(
+                            "Escuchar Musica En el Equipo",
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 25),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

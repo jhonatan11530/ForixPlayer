@@ -110,34 +110,39 @@ class _LocalMusicState extends State<LocalMusic> with TickerProviderStateMixin {
                 return const Text("Nothing found!",
                     style: TextStyle(color: Colors.black));
               }
-              return ListView.builder(
-                itemCount: item.data!.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(item.data![index].title ?? "No Artist",
-                        style: const TextStyle(color: Colors.black)),
-                    subtitle: Text(item.data![index].artist ?? "",
-                        style: const TextStyle(color: Colors.black)),
-                    leading: QueryArtworkWidget(
-                      keepOldArtwork: true,
-                      artworkQuality: FilterQuality.high,
-                      id: item.data![index].id,
-                      type: ArtworkType.AUDIO,
-                      nullArtworkWidget: const Icon(Icons.image_not_supported,
-                          size: 48, color: Colors.grey),
-                    ),
-                    onTap: () {
-                      setState(() {
-                        songs = item.data!;
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  Music(MusicSongs: item.data!, index: index)),
-                        );
-                      });
-                    },
-                  );
-                },
+              return CustomScrollView(
+                slivers: [
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      return ListTile(
+                        title: Text(item.data![index].title ?? "No Artist",
+                            style: const TextStyle(color: Colors.black)),
+                        subtitle: Text(item.data![index].artist ?? "",
+                            style: const TextStyle(color: Colors.black)),
+                        leading: QueryArtworkWidget(
+                          keepOldArtwork: true,
+                          artworkQuality: FilterQuality.high,
+                          id: item.data![index].id,
+                          type: ArtworkType.AUDIO,
+                          nullArtworkWidget: const Icon(
+                              Icons.image_not_supported,
+                              size: 48,
+                              color: Colors.grey),
+                        ),
+                        onTap: () {
+                          setState(() {
+                            songs = item.data!;
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => Music(
+                                      MusicSongs: item.data!, index: index)),
+                            );
+                          });
+                        },
+                      );
+                    }, childCount: item.data!.length),
+                  ),
+                ],
               );
             },
           ),
