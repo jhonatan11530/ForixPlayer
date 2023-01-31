@@ -66,7 +66,7 @@ class _MusicState extends State<Music> {
               },
               icon: const Icon(Icons.keyboard_arrow_down_sharp)),
           elevation: 0,
-          title: Text('Estas Escuchando ${songs[currentIndex].title}'),
+          title: Text('${songs[currentIndex].title}'),
         ),
         body: Column(
           children: [
@@ -133,9 +133,9 @@ class _MusicState extends State<Music> {
   Widget _buildComplexMarquee(String title) {
     return Marquee(
       autoRepeat: true,
-      animationDuration: const Duration(seconds: 5),
-      backDuration: const Duration(milliseconds: 5000),
-      pauseDuration: const Duration(milliseconds: 2500),
+      animationDuration: const Duration(seconds: 1),
+      backDuration: const Duration(seconds: 2),
+      pauseDuration: const Duration(milliseconds: 1500),
       directionMarguee: DirectionMarguee.TwoDirection,
       child: Text(
         title,

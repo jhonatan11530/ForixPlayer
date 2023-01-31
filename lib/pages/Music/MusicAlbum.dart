@@ -125,7 +125,7 @@ class _MusicAlbumState extends State<MusicAlbum> {
                     itemBuilder: (context, index) {
                       return ListTile(
                         title: Text(item.data![index].title ?? "No Artist"),
-                        subtitle: Text(item.data![index].displayName ?? ""),
+                        subtitle: Text(item.data![index].artist ?? ""),
                         leading: QueryArtworkWidget(
                           artworkQuality: FilterQuality.high,
                           keepOldArtwork: true,
@@ -149,13 +149,6 @@ class _MusicAlbumState extends State<MusicAlbum> {
               ),
             ),
           ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          backgroundColor: Colors.blue,
-          child: const Icon(Icons.arrow_back),
         ),
       ),
     );
