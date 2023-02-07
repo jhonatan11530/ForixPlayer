@@ -1,5 +1,7 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
-import 'package:forixplayer/Providers/ChangeTheme.dart';
+import 'package:forixplayer/Providers/MusicPlayer.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:marquee_widget/marquee_widget.dart';
 import 'package:just_audio/just_audio.dart';
@@ -19,44 +21,19 @@ class _MusicState extends State<Music> {
   int iconChangeRepat = 0, currentIndex = 0;
   Duration duration = Duration.zero;
   Duration position = Duration.zero;
-  List<SongModel> songs = [];
   String currentSongTitle = '';
   final advancedPlayer = AudioPlayer();
+  final MusicPlayer _musicPlayer = MusicPlayer();
   @override
   void initState() {
     super.initState();
-    songs.clear();
-    songs = widget.MusicSongs;
-    _musicInit();
-  }
-
-  _musicInit() async {
-    await advancedPlayer.setAudioSource(createPlaylist(widget.MusicSongs),
-        initialIndex: widget.index);
-
-    advancedPlayer.positionStream.listen((Duration p) {
-      setState(() => position = p);
-    });
-
-    advancedPlayer.durationStream.listen((d) {
-      setState(() => duration = d!);
-    });
-
-    advancedPlayer.currentIndexStream.listen((index) {
-      if (index != null) {
-        _updateCurrentPlayingSongDetails(index);
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    advancedPlayer.dispose();
+    _musicPlayer.players = widget.MusicSongs;
   }
 
   @override
   Widget build(BuildContext context) {
+    AudioPlayer player = context.watch<MusicPlayer>().player;
+    print("DURACION ${player.duration}");
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -67,7 +44,7 @@ class _MusicState extends State<Music> {
               },
               icon: const Icon(Icons.keyboard_arrow_down_sharp)),
           elevation: 0,
-          title: Text('${songs[currentIndex].title}'),
+          title: Text('${_musicPlayer.currentSongTitle}'),
         ),
         body: Column(
           children: [
@@ -79,7 +56,7 @@ class _MusicState extends State<Music> {
                 artworkBorder: BorderRadius.circular(0),
                 artworkQuality: FilterQuality.high,
                 keepOldArtwork: true,
-                id: songs[currentIndex].id,
+                id: _musicPlayer.currentSongID,
                 type: ArtworkType.AUDIO,
                 nullArtworkWidget: const Icon(Icons.image_not_supported,
                     size: 120, color: Colors.grey),
@@ -88,32 +65,43 @@ class _MusicState extends State<Music> {
             SizedBox(
               width: MediaQuery.of(context).size.width / 1.5,
               height: 30,
-              child: _buildComplexMarquee(currentSongTitle),
+              child: _buildComplexMarquee(_musicPlayer.currentSongTitle),
             ),
-            Slider(
-              value: position.inSeconds.toDouble(),
-              max: duration.inSeconds.toDouble() + 0.0,
-              onChanged: (value) {
-                setState(() {
-                  advancedPlayer.seek(Duration(seconds: value.toInt()));
-                });
-              },
+            ChangeNotifierProvider(
+              create: (context) => MusicPlayer(),
+              child: Consumer<MusicPlayer>(
+                builder: (context, value, child) {
+                  return Slider(
+                    value: _musicPlayer.position.inSeconds.toDouble(),
+                    max: _musicPlayer.duration!.inSeconds.toDouble() + 0.0,
+                    onChanged: (value) {
+                      _musicPlayer.seek(value.toInt());
+                    },
+                  );
+                },
+              ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(FormatTime(position)),
-                    Text(FormatTime(duration)),
-                  ]),
-            ),
+            ChangeNotifierProvider(
+                create: (context) => MusicPlayer(),
+                child: Consumer(
+                  builder: (context, value, child) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(FormatTime(_musicPlayer.position)),
+                            Text(FormatTime(_musicPlayer.duration!)),
+                          ]),
+                    );
+                  },
+                )),
             Expanded(
               child: Container(
                 color: Colors.blue,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: AudioControl(context),
+                  children: AudioControl(context, _musicPlayer),
                 ),
               ),
             ),
@@ -145,7 +133,7 @@ class _MusicState extends State<Music> {
     );
   }
 
-  List<Widget> AudioControl(BuildContext context) {
+  List<Widget> AudioControl(BuildContext context, MusicPlayer _musicPlayer) {
     return <Widget>[
       IconButton(
         padding: const EdgeInsets.all(8.0),
@@ -160,13 +148,11 @@ class _MusicState extends State<Music> {
           setState(() {
             switch (iconChangeshuffle) {
               case false:
-                advancedPlayer.shuffle();
-                advancedPlayer.setShuffleModeEnabled(false);
+                _musicPlayer.ShuffleModeEnabledFalse();
                 iconChangeshuffle = !iconChangeshuffle;
                 break;
               case true:
-                advancedPlayer.shuffle();
-                advancedPlayer.setShuffleModeEnabled(true);
+                _musicPlayer.ShuffleModeEnabledTrue();
                 iconChangeshuffle = !iconChangeshuffle;
                 break;
               default:
@@ -180,7 +166,7 @@ class _MusicState extends State<Music> {
         icon: const Icon(Icons.skip_previous),
         onPressed: () {
           setState(() {
-            advancedPlayer.seekToPrevious();
+            _musicPlayer.seekToPrevious();
           });
         },
       ),
@@ -193,11 +179,11 @@ class _MusicState extends State<Music> {
           setState(() {
             switch (iconChange) {
               case false:
-                advancedPlayer.play();
+                _musicPlayer.play();
                 iconChange = !iconChange;
                 break;
               case true:
-                advancedPlayer.stop();
+                _musicPlayer.stop();
                 iconChange = !iconChange;
                 break;
               default:
@@ -211,7 +197,7 @@ class _MusicState extends State<Music> {
         icon: const Icon(Icons.skip_next),
         onPressed: () {
           setState(() {
-            advancedPlayer.seekToNext();
+            _musicPlayer.seekToNext();
           });
         },
       ),
@@ -230,47 +216,20 @@ class _MusicState extends State<Music> {
             switch (iconChangeRepat) {
               case 0:
                 iconChangeRepat = 1;
-                advancedPlayer.setLoopMode(LoopMode.all);
+                _musicPlayer.setLoopModeAll();
                 break;
               case 1:
                 iconChangeRepat = 2;
-                advancedPlayer.setLoopMode(LoopMode.one);
+                _musicPlayer.setLoopModeOne();
                 break;
               case 2:
                 iconChangeRepat = 0;
-                advancedPlayer.setLoopMode(LoopMode.off);
+                _musicPlayer.setLoopModeOff();
                 break;
             }
           });
         },
       ),
     ];
-  }
-
-  ConcatenatingAudioSource createPlaylist(List<SongModel> songs) {
-    List<AudioSource> sources = [];
-    for (var song in songs) {
-      sources.add(
-        AudioSource.uri(
-          Uri.parse(song.uri!),
-          tag: MediaItem(
-            id: '${song.id}',
-            title: song.title,
-            album: song.album,
-            artUri: Uri.parse(song.uri!),
-          ),
-        ),
-      );
-    }
-    return ConcatenatingAudioSource(children: sources);
-  }
-
-  void _updateCurrentPlayingSongDetails(int index) {
-    setState(() {
-      if (songs.isNotEmpty) {
-        currentSongTitle = songs[index].title;
-        currentIndex = index;
-      }
-    });
   }
 }

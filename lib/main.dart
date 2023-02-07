@@ -1,19 +1,28 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:forixplayer/Navigator/navigator.dart';
 import 'package:forixplayer/Providers/ChangeTheme.dart';
+import 'package:forixplayer/Providers/MusicPlayer.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 
-Future<void> main() async {
-  await JustAudioBackground.init(
-    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
-    androidNotificationChannelName: 'Audio playback',
-    androidNotificationOngoing: true,
-    androidStopForegroundOnPause: true,
-  );
-  runApp(const ForixPlayer());
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (Platform.isAndroid) {
+    await JustAudioBackground.init(
+      androidNotificationChannelId: 'com.ryanhzeise.bg_demo.channel.audio',
+      androidNotificationChannelName: 'Audio playback',
+      androidNotificationOngoing: false,
+    );
+  }
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider<MusicPlayer>(create: (ctx) => MusicPlayer()),
+    //ChangeNotifierProvider(create: (_) => SearchProvider())
+  ], child: const ForixPlayer()));
 }
 
 class ForixPlayer extends StatefulWidget {
