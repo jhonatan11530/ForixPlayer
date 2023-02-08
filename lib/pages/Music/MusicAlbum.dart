@@ -139,7 +139,7 @@ class _MusicAlbumState extends State<MusicAlbum> {
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) =>
-                                Music(MusicSongs: item.data!, index: index),
+                                Music(MusicSongs: item.data!),
                           ));
                         },
                       );

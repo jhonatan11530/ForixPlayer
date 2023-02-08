@@ -1,12 +1,11 @@
-import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
-class MusicPlayer extends ChangeNotifier {
+class MusicPlayer extends ValueNotifier<int> {
   int currentSongID = 0;
   List<SongModel> songs = [];
   Duration position = Duration.zero;
@@ -23,7 +22,9 @@ class MusicPlayer extends ChangeNotifier {
 
   get player => _advancedPlayer;
 
-  MusicPlayer() {
+  MusicPlayer() : super(0) {
+    _advancedPlayer.playerStateStream.listen((state) async {});
+
     _advancedPlayer.positionStream.listen((Duration p) {
       position = p;
       notifyListeners();
@@ -41,11 +42,34 @@ class MusicPlayer extends ChangeNotifier {
         notifyListeners();
       }
     });
+
+    _advancedPlayer.sequenceStream.listen((event) {
+      notifyListeners();
+    });
+
+    _advancedPlayer.loopModeStream.listen((event) {
+      notifyListeners();
+    });
+
+    _advancedPlayer.shuffleModeEnabledStream.listen((event) {
+      notifyListeners();
+    });
   }
 
-  seek(int value) {
-    _advancedPlayer.seek(Duration(seconds: value.toInt()));
-    notifyListeners();
+  Positions() {
+    return position;
+  }
+
+  Durations() {
+    return duration;
+  }
+
+  PositionSlider() {
+    return position.inSeconds.toDouble();
+  }
+
+  DurationSlider() {
+    return duration.inSeconds.toDouble();
   }
 
   void dispose() {

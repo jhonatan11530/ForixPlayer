@@ -1,39 +1,32 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:forixplayer/Providers/MusicPlayer.dart';
-import 'package:just_audio_background/just_audio_background.dart';
-import 'package:marquee_widget/marquee_widget.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:marquee_widget/marquee_widget.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 
 class Music extends StatefulWidget {
   final List<SongModel> MusicSongs;
-  final int index;
-  const Music({super.key, required this.MusicSongs, required this.index});
+  const Music({super.key, required this.MusicSongs});
   @override
   State<Music> createState() => _MusicState();
 }
 
 class _MusicState extends State<Music> {
   bool iconChange = false, iconChangeshuffle = false;
-  int iconChangeRepat = 0, currentIndex = 0;
-  Duration duration = Duration.zero;
-  Duration position = Duration.zero;
-  String currentSongTitle = '';
-  final advancedPlayer = AudioPlayer();
-  final MusicPlayer _musicPlayer = MusicPlayer();
+  int iconChangeRepat = 0;
+  MusicPlayer _musicPlayer = MusicPlayer();
   @override
   void initState() {
     super.initState();
+
     _musicPlayer.players = widget.MusicSongs;
   }
 
   @override
   Widget build(BuildContext context) {
     AudioPlayer player = context.watch<MusicPlayer>().player;
-    print("DURACION ${player.duration}");
+    //final postProvider = Provider.of<MusicPlayer>(context, listen: false);
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -67,41 +60,40 @@ class _MusicState extends State<Music> {
               height: 30,
               child: _buildComplexMarquee(_musicPlayer.currentSongTitle),
             ),
-            ChangeNotifierProvider(
-              create: (context) => MusicPlayer(),
-              child: Consumer<MusicPlayer>(
-                builder: (context, value, child) {
-                  return Slider(
-                    value: _musicPlayer.position.inSeconds.toDouble(),
-                    max: _musicPlayer.duration!.inSeconds.toDouble() + 0.0,
-                    onChanged: (value) {
-                      _musicPlayer.seek(value.toInt());
-                    },
-                  );
-                },
-              ),
-            ),
-            ChangeNotifierProvider(
-                create: (context) => MusicPlayer(),
-                child: Consumer(
-                  builder: (context, value, child) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(FormatTime(_musicPlayer.position)),
-                            Text(FormatTime(_musicPlayer.duration!)),
-                          ]),
-                    );
+            ValueListenableBuilder<int>(
+              valueListenable: _musicPlayer,
+              builder: (context, value, child) {
+                return Slider(
+                  value: _musicPlayer.PositionSlider(),
+                  max: _musicPlayer.DurationSlider() + 0.0,
+                  onChanged: (value) {
+                    setState(() {
+                      player.seek(Duration(seconds: value.toInt()));
+                    });
                   },
-                )),
+                );
+              },
+            ),
+            ValueListenableBuilder<int>(
+              valueListenable: _musicPlayer,
+              builder: (context, value, child) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(FormatTime(_musicPlayer.Positions())),
+                        Text(FormatTime(_musicPlayer.Durations()!)),
+                      ]),
+                );
+              },
+            ),
             Expanded(
               child: Container(
                 color: Colors.blue,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: AudioControl(context, _musicPlayer),
+                  children: AudioControl(context),
                 ),
               ),
             ),
@@ -133,7 +125,7 @@ class _MusicState extends State<Music> {
     );
   }
 
-  List<Widget> AudioControl(BuildContext context, MusicPlayer _musicPlayer) {
+  List<Widget> AudioControl(BuildContext context) {
     return <Widget>[
       IconButton(
         padding: const EdgeInsets.all(8.0),
