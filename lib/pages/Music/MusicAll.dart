@@ -33,6 +33,7 @@ class _MusicState extends State<Music> {
           backgroundColor: Colors.blue,
           leading: IconButton(
               onPressed: () {
+                _musicPlayer.dispose();
                 Navigator.pop(context);
               },
               icon: const Icon(Icons.keyboard_arrow_down_sharp)),

@@ -142,8 +142,8 @@ class _LocalMusicState extends State<LocalMusic> with TickerProviderStateMixin {
                             songs = item.data!;
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                  builder: (context) => Music(
-                                      MusicSongs: item.data!)),
+                                  builder: (context) =>
+                                      Music(MusicSongs: item.data!)),
                             );
                           });
                         },
@@ -163,8 +163,16 @@ class _LocalMusicState extends State<LocalMusic> with TickerProviderStateMixin {
     return FutureBuilder<List<SongModel>>(
       future: AllSongs(),
       builder: (context, item) {
+        if (item.data == null) {
+          return Container(
+              width: 100, height: 100, child: CircularProgressIndicator());
+        }
+        if (item.data!.isEmpty) {
+          return const Text("Nothing found!",
+              style: TextStyle(color: Colors.black));
+        }
         return GridView.builder(
-          itemCount: item.data!.length,
+          itemCount: item.data!.length ?? 0,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2),
           itemBuilder: (context, index) {
