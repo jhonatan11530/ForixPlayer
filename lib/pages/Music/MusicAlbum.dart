@@ -123,6 +123,18 @@ class _MusicAlbumState extends State<MusicAlbum> {
                   return ListView.builder(
                     itemCount: item.data!.length,
                     itemBuilder: (context, index) {
+                      if (item.data == null) {
+                        return Center(
+                          child: Container(
+                              width: 100,
+                              height: 100,
+                              child: CircularProgressIndicator()),
+                        );
+                      }
+                      if (item.data!.isEmpty) {
+                        return const Text("Nothing found!",
+                            style: TextStyle(color: Colors.black));
+                      }
                       return ListTile(
                         title: Text(item.data![index].title ?? "No Artist"),
                         subtitle: Text(item.data![index].artist ?? ""),
@@ -138,8 +150,7 @@ class _MusicAlbumState extends State<MusicAlbum> {
                         ),
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) =>
-                                Music(MusicSongs: item.data!),
+                            builder: (context) => Music(MusicSongs: item.data!),
                           ));
                         },
                       );
