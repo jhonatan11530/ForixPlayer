@@ -5,8 +5,8 @@ import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
-class MusicPlayer extends ValueNotifier<int> {
-  int currentSongID = 0;
+class MusicPlayer extends ValueNotifier {
+  int currentSongID = 0, valueIndex = 0;
   List<SongModel> songs = [];
   Duration position = Duration.zero;
   Duration duration = Duration.zero;
@@ -16,8 +16,15 @@ class MusicPlayer extends ValueNotifier<int> {
   set players(List<SongModel> value) {
     songs.clear();
     songs = value;
-    _advancedPlayer.setAudioSource(createPlaylist(value),
-        initialIndex: 0, initialPosition: Duration.zero, preload: true);
+  }
+
+  set IndexMusic(int value) {
+    valueIndex = value;
+
+    _advancedPlayer.setAudioSource(createPlaylist(songs),
+        initialIndex: valueIndex,
+        initialPosition: Duration.zero,
+        preload: true);
   }
 
   get player => _advancedPlayer;

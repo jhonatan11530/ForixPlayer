@@ -49,118 +49,112 @@ class _MusicAlbumState extends State<MusicAlbum> {
         ),
         body: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Expanded(
-                      child: Container(
-                        height: 150,
-                        width: 150,
-                        padding: const EdgeInsets.symmetric(horizontal: 6),
-                        child: QueryArtworkWidget(
-                          artworkBorder: BorderRadius.circular(0),
-                          artworkQuality: FilterQuality.high,
-                          keepOldArtwork: true,
-                          id: songs[widget.index].id,
-                          type: ArtworkType.AUDIO,
-                          nullArtworkWidget: const Icon(
-                              Icons.image_not_supported,
-                              size: 62,
-                              color: Colors.grey),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 0),
-                    child: Expanded(
-                      child: Container(
-                        height: 150,
-                        width: 150,
-                        padding: const EdgeInsets.symmetric(horizontal: 0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              textAlign: TextAlign.center,
-                              songs[widget.index].title,
-                              style: const TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              'Artista ${songs[widget.index].artist}',
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.grey),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            Stack(
+              alignment: Alignment.center,
+              children: <Widget>[
+                ImageAlbum(context),
+                Stacks(context),
+              ],
             ),
-            Expanded(
-              child: FutureBuilder<List<SongModel>>(
-                future: SongsAlbum(),
-                builder: (context, item) {
-                  if (item.data == null) {
-                    return Center(
-                      child: Container(
-                          width: 100,
-                          height: 100,
-                          child: const CircularProgressIndicator()),
-                    );
-                  }
-                  if (item.data!.isEmpty) return const Text("Nothing found!");
-                  return ListView.builder(
-                    itemCount: item.data!.length,
-                    itemBuilder: (context, index) {
-                      if (item.data == null) {
-                        return Center(
-                          child: Container(
-                              width: 100,
-                              height: 100,
-                              child: CircularProgressIndicator()),
-                        );
-                      }
-                      if (item.data!.isEmpty) {
-                        return const Text("Nothing found!",
-                            style: TextStyle(color: Colors.black));
-                      }
-                      return ListTile(
-                        title: Text(item.data![index].title ?? "No Artist"),
-                        subtitle: Text(item.data![index].artist ?? ""),
-                        leading: QueryArtworkWidget(
-                          artworkQuality: FilterQuality.high,
-                          keepOldArtwork: true,
-                          id: item.data![index].id,
-                          type: ArtworkType.AUDIO,
-                          nullArtworkWidget: const Icon(
-                              Icons.image_not_supported,
-                              size: 48,
-                              color: Colors.grey),
-                        ),
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => Music(MusicSongs: item.data!),
-                          ));
-                        },
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
+            ListMusic(context),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget ImageAlbum(BuildContext context) {
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.40,
+      width: MediaQuery.of(context).size.width,
+      child: QueryArtworkWidget(
+        artworkFit: BoxFit.fill,
+        artworkBorder: BorderRadius.circular(0),
+        artworkQuality: FilterQuality.high,
+        keepOldArtwork: true,
+        id: songs[widget.index].id,
+        type: ArtworkType.AUDIO,
+        nullArtworkWidget:
+            const Icon(Icons.image_not_supported, size: 62, color: Colors.grey),
+      ),
+    );
+  }
+
+  Widget Stacks(BuildContext context) {
+    return Positioned(
+      width: MediaQuery.of(context).size.width,
+      top: MediaQuery.of(context).size.height / 3.5,
+      child: Column(
+        children: [
+          Text(
+            textAlign: TextAlign.center,
+            songs[widget.index].title,
+            style: const TextStyle(
+                fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue),
+          ),
+          Text(
+            'Artista ${songs[widget.index].artist}',
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 9, 137, 241)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget ListMusic(BuildContext context) {
+    return Expanded(
+      child: FutureBuilder<List<SongModel>>(
+        future: SongsAlbum(),
+        builder: (context, item) {
+          if (item.data == null) {
+            return Center(
+              child: Container(
+                  width: 100,
+                  height: 100,
+                  child: const CircularProgressIndicator()),
+            );
+          }
+          if (item.data!.isEmpty) return const Text("Nothing found!");
+          return ListView.builder(
+            itemCount: item.data!.length,
+            itemBuilder: (context, index) {
+              if (item.data == null) {
+                return Center(
+                  child: Container(
+                      width: 100,
+                      height: 100,
+                      child: CircularProgressIndicator()),
+                );
+              }
+              if (item.data!.isEmpty) {
+                return const Text("Nothing found!",
+                    style: TextStyle(color: Colors.black));
+              }
+              return ListTile(
+                title: Text(item.data![index].title ?? "No Artist"),
+                subtitle: Text(item.data![index].artist ?? ""),
+                leading: QueryArtworkWidget(
+                  artworkQuality: FilterQuality.high,
+                  keepOldArtwork: true,
+                  id: item.data![index].id,
+                  type: ArtworkType.AUDIO,
+                  nullArtworkWidget: const Icon(Icons.image_not_supported,
+                      size: 48, color: Colors.grey),
+                ),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) =>
+                        Music(MusicSongs: item.data!, index: index),
+                  ));
+                },
+              );
+            },
+          );
+        },
       ),
     );
   }

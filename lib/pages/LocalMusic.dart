@@ -143,7 +143,7 @@ class _LocalMusicState extends State<LocalMusic> with TickerProviderStateMixin {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      Music(MusicSongs: item.data!)),
+                                      Music(MusicSongs: item.data!,index: index,)),
                             );
                           });
                         },

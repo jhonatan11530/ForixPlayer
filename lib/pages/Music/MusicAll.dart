@@ -7,7 +7,8 @@ import 'package:provider/provider.dart';
 
 class Music extends StatefulWidget {
   final List<SongModel> MusicSongs;
-  const Music({super.key, required this.MusicSongs});
+  final int index;
+  const Music({super.key, required this.MusicSongs, required this.index});
   @override
   State<Music> createState() => _MusicState();
 }
@@ -19,8 +20,11 @@ class _MusicState extends State<Music> {
   @override
   void initState() {
     super.initState();
-
     _musicPlayer.players = widget.MusicSongs;
+    _musicPlayer.IndexMusic = widget.index;
+    
+    _musicPlayer.play();
+    iconChange = !iconChange;
   }
 
   @override
@@ -42,26 +46,37 @@ class _MusicState extends State<Music> {
         ),
         body: Column(
           children: [
-            Container(
-              height: MediaQuery.of(context).size.height * 0.5,
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.all(20),
-              child: QueryArtworkWidget(
-                artworkBorder: BorderRadius.circular(0),
-                artworkQuality: FilterQuality.high,
-                keepOldArtwork: true,
-                id: _musicPlayer.currentSongID,
-                type: ArtworkType.AUDIO,
-                nullArtworkWidget: const Icon(Icons.image_not_supported,
-                    size: 120, color: Colors.grey),
-              ),
+            ValueListenableBuilder(
+              valueListenable: _musicPlayer,
+              builder: (context, value, child) {
+                return Container(
+                  height: MediaQuery.of(context).size.height * 0.5,
+                  width: MediaQuery.of(context).size.width,
+                  padding: const EdgeInsets.all(20),
+                  child: QueryArtworkWidget(
+                    artworkFit: BoxFit.contain,
+                    artworkBorder: BorderRadius.circular(0),
+                    artworkQuality: FilterQuality.high,
+                    keepOldArtwork: true,
+                    id: _musicPlayer.currentSongID,
+                    type: ArtworkType.AUDIO,
+                    nullArtworkWidget: const Icon(Icons.image_not_supported,
+                        size: 120, color: Colors.grey),
+                  ),
+                );
+              },
             ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width / 1.5,
-              height: 30,
-              child: _buildComplexMarquee(_musicPlayer.currentSongTitle),
+            ValueListenableBuilder(
+              valueListenable: _musicPlayer,
+              builder: (context, value, child) {
+                return SizedBox(
+                  width: MediaQuery.of(context).size.width / 1.5,
+                  height: 30,
+                  child: _buildComplexMarquee(_musicPlayer.currentSongTitle),
+                );
+              },
             ),
-            ValueListenableBuilder<int>(
+            ValueListenableBuilder(
               valueListenable: _musicPlayer,
               builder: (context, value, child) {
                 return Slider(
@@ -75,7 +90,7 @@ class _MusicState extends State<Music> {
                 );
               },
             ),
-            ValueListenableBuilder<int>(
+            ValueListenableBuilder(
               valueListenable: _musicPlayer,
               builder: (context, value, child) {
                 return Padding(
