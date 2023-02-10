@@ -16,7 +16,7 @@ void main() async {
     await JustAudioBackground.init(
       androidNotificationChannelId: 'com.ryanhzeise.bg_demo.channel.audio',
       androidNotificationChannelName: 'Audio playback',
-      androidNotificationOngoing: false,
+      androidNotificationOngoing: true,
     );
   }
   runApp(MultiProvider(providers: [

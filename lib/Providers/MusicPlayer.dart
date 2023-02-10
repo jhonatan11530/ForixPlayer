@@ -140,8 +140,8 @@ class MusicPlayer extends ValueNotifier {
           tag: MediaItem(
             id: '${song.id}',
             title: song.title,
-            album: song.album,
-            artUri: Uri.parse('${song.uri}'),
+            artist: song.artist,
+            artUri: Uri.parse(song.uri!),
           ),
         ),
       );
