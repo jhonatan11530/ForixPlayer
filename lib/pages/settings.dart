@@ -121,6 +121,7 @@ class _SettingsState extends State<Settings> {
       builder: (context) => AlertDialog(
         title: const Text("Cambiar tema"),
         content: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             SwitchListTile(
               title: const Text("Modo Noche"),
