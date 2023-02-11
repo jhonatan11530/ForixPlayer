@@ -36,7 +36,9 @@ class _SettingsState extends State<Settings> {
     final themeChangeProvider = Provider.of<ChangeTheme>(context);
 
     return MaterialApp(
-      theme: themeChangeProvider.isdarktheme ? ThemeData.dark() : ThemeData.light(),
+      theme: themeChangeProvider.isdarktheme
+          ? ThemeData.dark()
+          : ThemeData.light(),
       home: Scaffold(
         body: Column(
           children: [
@@ -50,10 +52,8 @@ class _SettingsState extends State<Settings> {
                     Padding(padding: EdgeInsets.all(15)),
                     Text(
                       "Configuracion",
-                      style: TextStyle(
-                          fontSize: 30,
-                          color: Colors.blue,
-                          fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -66,9 +66,8 @@ class _SettingsState extends State<Settings> {
                 itemBuilder: (context, index) {
                   return ListTile(
                     title: Text(entries[index], style: TextStyle(fontSize: 15)),
-                    trailing: Icon(
+                    trailing: const Icon(
                       Icons.arrow_forward_ios,
-                      color: Colors.blue,
                       size: 15,
                     ),
                     onTap: () {
@@ -123,16 +122,10 @@ class _SettingsState extends State<Settings> {
         title: const Text("Cambiar tema"),
         content: Column(
           children: [
-            Row(
-              children: [
-                const Text("Modo Noche"),
-                Switch(
-                  value: themeChangeProvider.isdarktheme,
-                  onChanged: (value) {
-                    themeChangeProvider.isdarktheme = value;
-                  },
-                ),
-              ],
+            SwitchListTile(
+              title: const Text("Modo Noche"),
+              value: themeChangeProvider.isdarktheme,
+              onChanged: (value) => themeChangeProvider.isdarktheme = value,
             ),
           ],
         ),

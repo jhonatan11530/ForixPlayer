@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:forixplayer/Providers/ChangeTheme.dart';
 import 'package:forixplayer/Providers/MusicPlayer.dart';
+import 'package:forixplayer/pages/LocalMusic.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:marquee_widget/marquee_widget.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -16,13 +18,14 @@ class Music extends StatefulWidget {
 class _MusicState extends State<Music> {
   bool iconChange = false, iconChangeshuffle = false;
   int iconChangeRepat = 0;
-  MusicPlayer _musicPlayer = MusicPlayer();
+  final MusicPlayer _musicPlayer = MusicPlayer();
   @override
   void initState() {
     super.initState();
+
     _musicPlayer.players = widget.MusicSongs;
     _musicPlayer.IndexMusic = widget.index;
-    
+
     _musicPlayer.play();
     iconChange = !iconChange;
   }
@@ -30,89 +33,109 @@ class _MusicState extends State<Music> {
   @override
   Widget build(BuildContext context) {
     AudioPlayer player = context.watch<MusicPlayer>().player;
-    //final postProvider = Provider.of<MusicPlayer>(context, listen: false);
+    final themeChangeProvider = Provider.of<ChangeTheme>(context);
     return MaterialApp(
+      theme: themeChangeProvider.isdarktheme
+          ? ThemeData.dark()
+          : ThemeData.light(),
       home: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.blue,
           leading: IconButton(
               onPressed: () {
                 _musicPlayer.dispose();
                 Navigator.pop(context);
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => LocalMusic()),
+                );
               },
               icon: const Icon(Icons.keyboard_arrow_down_sharp)),
           elevation: 0,
           title: Text('${_musicPlayer.currentSongTitle}'),
         ),
-        body: Column(
+        body: Stack(
           children: [
-            ValueListenableBuilder(
-              valueListenable: _musicPlayer,
-              builder: (context, value, child) {
-                return Container(
-                  height: MediaQuery.of(context).size.height * 0.5,
-                  width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.all(20),
-                  child: QueryArtworkWidget(
-                    artworkFit: BoxFit.contain,
-                    artworkBorder: BorderRadius.circular(0),
-                    artworkQuality: FilterQuality.high,
-                    keepOldArtwork: true,
-                    id: _musicPlayer.currentSongID,
-                    type: ArtworkType.AUDIO,
-                    nullArtworkWidget: const Icon(Icons.image_not_supported,
-                        size: 120, color: Colors.grey),
-                  ),
-                );
-              },
-            ),
-            ValueListenableBuilder(
-              valueListenable: _musicPlayer,
-              builder: (context, value, child) {
-                return SizedBox(
-                  width: MediaQuery.of(context).size.width / 1.5,
-                  height: 30,
-                  child: _buildComplexMarquee(_musicPlayer.currentSongTitle),
-                );
-              },
-            ),
-            ValueListenableBuilder(
-              valueListenable: _musicPlayer,
-              builder: (context, value, child) {
-                return Slider(
-                  value: _musicPlayer.PositionSlider(),
-                  max: _musicPlayer.DurationSlider() + 0.0,
-                  onChanged: (value) {
-                    setState(() {
-                      player.seek(Duration(seconds: value.toInt()));
-                    });
+            Column(
+              children: [
+                ValueListenableBuilder(
+                  valueListenable: _musicPlayer,
+                  builder: (context, value, child) {
+                    return Container(
+                      height: MediaQuery.of(context).size.height * 0.5,
+                      width: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.all(20),
+                      child: QueryArtworkWidget(
+                        artworkFit: BoxFit.contain,
+                        artworkBorder: BorderRadius.circular(0),
+                        artworkQuality: FilterQuality.high,
+                        keepOldArtwork: true,
+                        id: _musicPlayer.currentSongID,
+                        type: ArtworkType.AUDIO,
+                        nullArtworkWidget: const Icon(Icons.image_not_supported,
+                            size: 120, color: Colors.grey),
+                      ),
+                    );
                   },
-                );
-              },
-            ),
-            ValueListenableBuilder(
-              valueListenable: _musicPlayer,
-              builder: (context, value, child) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(FormatTime(_musicPlayer.Positions())),
-                        Text(FormatTime(_musicPlayer.Durations()!)),
-                      ]),
-                );
-              },
-            ),
-            Expanded(
-              child: Container(
-                color: Colors.blue,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: AudioControl(context),
                 ),
-              ),
+                ValueListenableBuilder(
+                  valueListenable: _musicPlayer,
+                  builder: (context, value, child) {
+                    return SizedBox(
+                      width: MediaQuery.of(context).size.width / 1.5,
+                      height: 30,
+                      child:
+                          _buildComplexMarquee(_musicPlayer.currentSongTitle),
+                    );
+                  },
+                ),
+                ValueListenableBuilder(
+                  valueListenable: _musicPlayer,
+                  builder: (context, value, child) {
+                    return Slider(
+                      value: _musicPlayer.PositionSlider(),
+                      max: _musicPlayer.DurationSlider() + 0.0,
+                      onChanged: (value) {
+                        setState(() {
+                          player.seek(Duration(seconds: value.toInt()));
+                        });
+                      },
+                    );
+                  },
+                ),
+                ValueListenableBuilder(
+                  valueListenable: _musicPlayer,
+                  builder: (context, value, child) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(FormatTime(_musicPlayer.Positions())),
+                            Text(FormatTime(_musicPlayer.Durations()!)),
+                          ]),
+                    );
+                  },
+                ),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: AudioControl(context),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
+            Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                DraggableScroll(
+                  AllSongs: widget.MusicSongs,
+                  Player: _musicPlayer,
+                )
+              ],
+            )
           ],
         ),
       ),
@@ -144,7 +167,6 @@ class _MusicState extends State<Music> {
   List<Widget> AudioControl(BuildContext context) {
     return <Widget>[
       IconButton(
-        padding: const EdgeInsets.all(8.0),
         iconSize: 32,
         icon: (iconChangeshuffle == false)
             ? const Icon(
@@ -169,7 +191,6 @@ class _MusicState extends State<Music> {
         },
       ),
       IconButton(
-        padding: const EdgeInsets.all(8.0),
         iconSize: 48,
         icon: const Icon(Icons.skip_previous),
         onPressed: () {
@@ -179,7 +200,6 @@ class _MusicState extends State<Music> {
         },
       ),
       IconButton(
-        padding: const EdgeInsets.all(8.0),
         iconSize: 64,
         icon:
             Icon((iconChange == false) ? Icons.play_arrow : Icons.pause_sharp),
@@ -200,7 +220,6 @@ class _MusicState extends State<Music> {
         },
       ),
       IconButton(
-        padding: const EdgeInsets.all(8.0),
         iconSize: 48,
         icon: const Icon(Icons.skip_next),
         onPressed: () {
@@ -210,7 +229,6 @@ class _MusicState extends State<Music> {
         },
       ),
       IconButton(
-        padding: const EdgeInsets.all(8.0),
         iconSize: 32,
         icon: Icon((iconChangeRepat == 0)
             ? Icons.repeat
@@ -239,5 +257,85 @@ class _MusicState extends State<Music> {
         },
       ),
     ];
+  }
+}
+
+class DraggableScroll extends StatelessWidget {
+  final List<SongModel> AllSongs;
+  final MusicPlayer Player;
+  const DraggableScroll(
+      {super.key, required this.AllSongs, required this.Player});
+
+  @override
+  Widget build(BuildContext context) {
+    return DraggableScrollableSheet(
+      initialChildSize: 0.1,
+      minChildSize: 0.1,
+      maxChildSize: 1,
+      builder: (context, scrollController) {
+        return Container(
+          child: ListViewMusic(
+            scrollController: scrollController,
+            SongsList: AllSongs,
+            Players: Player,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.grey,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(30),
+              topRight: Radius.circular(30),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class ListViewMusic extends StatelessWidget {
+  final ScrollController scrollController;
+  final List<SongModel> SongsList;
+  final MusicPlayer Players;
+  const ListViewMusic(
+      {super.key,
+      required this.scrollController,
+      required this.SongsList,
+      required this.Players});
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomScrollView(
+      controller: scrollController,
+      slivers: [
+        SliverList(
+          delegate: SliverChildBuilderDelegate((context, index) {
+            return ListTile(
+              title: Text(SongsList[index].title ?? "No Artist"),
+              subtitle: Text(SongsList[index].artist ?? ""),
+              leading: QueryArtworkWidget(
+                keepOldArtwork: true,
+                artworkQuality: FilterQuality.high,
+                id: SongsList[index].id,
+                type: ArtworkType.AUDIO,
+                nullArtworkWidget: const Icon(Icons.image_not_supported,
+                    size: 48, color: Colors.grey),
+              ),
+              onTap: () {
+                Players.stop();
+                Navigator.pop(context);
+
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (context) => Music(
+                            MusicSongs: SongsList,
+                            index: index,
+                          )),
+                );
+              },
+            );
+          }, childCount: SongsList.length),
+        ),
+      ],
+    );
   }
 }

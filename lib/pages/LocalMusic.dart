@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:forixplayer/Providers/ChangeTheme.dart';
+import 'package:forixplayer/main.dart';
 import 'package:forixplayer/pages/Music/MusicAlbum.dart';
 import 'package:forixplayer/pages/Music/MusicAll.dart';
+import 'package:forixplayer/pages/home.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:provider/provider.dart';
 
 class LocalMusic extends StatefulWidget {
   const LocalMusic({super.key});
@@ -18,7 +21,7 @@ class _LocalMusicState extends State<LocalMusic> with TickerProviderStateMixin {
   Duration position = Duration.zero;
   List<SongModel> songs = [];
   String currentSongTitle = '';
-  ChangeTheme changeTheme = new ChangeTheme();
+  ChangeTheme changeTheme = ChangeTheme();
   final OnAudioQuery _audioQuery = OnAudioQuery();
   late TabController _tabController;
   @override
@@ -30,7 +33,11 @@ class _LocalMusicState extends State<LocalMusic> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final themeChangeProvider = Provider.of<ChangeTheme>(context);
     return MaterialApp(
+      theme: themeChangeProvider.isdarktheme
+          ? ThemeData.dark()
+          : ThemeData.light(),
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Musica En el Dispositivo'),
@@ -58,8 +65,11 @@ class _LocalMusicState extends State<LocalMusic> with TickerProviderStateMixin {
         floatingActionButton: FloatingActionButton(
             onPressed: () {
               Navigator.pop(context);
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => ForixPlayer(),
+              ));
             },
-            child: Icon(Icons.arrow_back)),
+            child: const Icon(Icons.arrow_back)),
       ),
     );
   }
@@ -111,7 +121,7 @@ class _LocalMusicState extends State<LocalMusic> with TickerProviderStateMixin {
                   child: Container(
                       width: 100,
                       height: 100,
-                      child: CircularProgressIndicator()),
+                      child: const CircularProgressIndicator()),
                 );
               }
               if (item.data!.isEmpty) {
@@ -123,10 +133,8 @@ class _LocalMusicState extends State<LocalMusic> with TickerProviderStateMixin {
                   SliverList(
                     delegate: SliverChildBuilderDelegate((context, index) {
                       return ListTile(
-                        title: Text(item.data![index].title ?? "No Artist",
-                            style: const TextStyle(color: Colors.black)),
-                        subtitle: Text(item.data![index].artist ?? "",
-                            style: const TextStyle(color: Colors.black)),
+                        title: Text(item.data![index].title ?? "No Artist"),
+                        subtitle: Text(item.data![index].artist ?? ""),
                         leading: QueryArtworkWidget(
                           keepOldArtwork: true,
                           artworkQuality: FilterQuality.high,
@@ -142,8 +150,10 @@ class _LocalMusicState extends State<LocalMusic> with TickerProviderStateMixin {
                             songs = item.data!;
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      Music(MusicSongs: item.data!,index: index,)),
+                                  builder: (context) => Music(
+                                        MusicSongs: item.data!,
+                                        index: index,
+                                      )),
                             );
                           });
                         },
@@ -165,11 +175,12 @@ class _LocalMusicState extends State<LocalMusic> with TickerProviderStateMixin {
       builder: (context, item) {
         if (item.data == null) {
           return Container(
-              width: 100, height: 100, child: CircularProgressIndicator());
+              width: 100,
+              height: 100,
+              child: const CircularProgressIndicator());
         }
         if (item.data!.isEmpty) {
-          return const Text("Nothing found!",
-              style: TextStyle(color: Colors.black));
+          return const Text("Nothing found!");
         }
         return GridView.builder(
           itemCount: item.data!.length ?? 0,

@@ -63,7 +63,6 @@ class _HomeState extends State<Home> {
                     _Today,
                     style: const TextStyle(
                         fontSize: 35,
-                        color: Colors.blue,
                         fontWeight: FontWeight.bold),
                   ),
                   Text(
@@ -147,15 +146,6 @@ class _HomeState extends State<Home> {
           ],
         ),
       ),
-    );
-  }
-
-  Future<List<SongModel>> AllSongs() {
-    return _audioQuery.querySongs(
-      sortType: SongSortType.TITLE,
-      orderType: OrderType.ASC_OR_SMALLER,
-      uriType: UriType.EXTERNAL,
-      ignoreCase: true,
     );
   }
 
