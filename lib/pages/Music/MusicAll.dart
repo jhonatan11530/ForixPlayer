@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:forixplayer/Providers/ChangeTheme.dart';
 import 'package:forixplayer/Providers/MusicPlayer.dart';
@@ -17,7 +18,8 @@ class Music extends StatefulWidget {
 
 class _MusicState extends State<Music> {
   bool iconChange = false, iconChangeshuffle = false;
-  int iconChangeRepat = 0;
+  int iconChangeRepat = 0, speedSongs = 0;
+  double volume = 1;
   final MusicPlayer _musicPlayer = MusicPlayer();
   @override
   void initState() {
@@ -60,9 +62,9 @@ class _MusicState extends State<Music> {
                   valueListenable: _musicPlayer,
                   builder: (context, value, child) {
                     return Container(
-                      height: MediaQuery.of(context).size.height * 0.5,
+                      height: MediaQuery.of(context).size.height * 0.45,
                       width: MediaQuery.of(context).size.width,
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(10),
                       child: QueryArtworkWidget(
                         artworkFit: BoxFit.contain,
                         artworkBorder: BorderRadius.circular(0),
@@ -105,7 +107,7 @@ class _MusicState extends State<Music> {
                   valueListenable: _musicPlayer,
                   builder: (context, value, child) {
                     return Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.only(left: 15, right: 15),
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -120,6 +122,10 @@ class _MusicState extends State<Music> {
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
+                        children: AudioControlTwo(context, volume),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: AudioControl(context),
                       ),
                     ],
@@ -127,15 +133,6 @@ class _MusicState extends State<Music> {
                 ),
               ],
             ),
-            Stack(
-              alignment: Alignment.bottomCenter,
-              children: [
-                DraggableScroll(
-                  AllSongs: widget.MusicSongs,
-                  Player: _musicPlayer,
-                )
-              ],
-            )
           ],
         ),
       ),
@@ -173,7 +170,10 @@ class _MusicState extends State<Music> {
                 Icons.shuffle,
                 color: Colors.grey,
               )
-            : const Icon(Icons.shuffle),
+            : const Icon(
+                Icons.shuffle,
+                color: Colors.black,
+              ),
         onPressed: () {
           setState(() {
             switch (iconChangeshuffle) {
@@ -228,15 +228,24 @@ class _MusicState extends State<Music> {
           });
         },
       ),
-      IconButton(
-        iconSize: 32,
-        icon: Icon((iconChangeRepat == 0)
-            ? Icons.repeat
+      TextButton(
+        child: (iconChangeRepat == 0)
+            ? Icon(
+                Icons.repeat,
+                size: 32,
+                color: Colors.grey,
+              )
             : (iconChangeRepat == 1)
-                ? Icons.repeat_on_rounded
-                : (iconChangeRepat == 2)
-                    ? Icons.repeat_one
-                    : null),
+                ? Icon(
+                    Icons.repeat_on_rounded,
+                    size: 32,
+                    color: Colors.black,
+                  )
+                : Icon(
+                    Icons.repeat_one,
+                    size: 32,
+                    color: Colors.black,
+                  ),
         onPressed: () {
           setState(() {
             switch (iconChangeRepat) {
@@ -258,84 +267,97 @@ class _MusicState extends State<Music> {
       ),
     ];
   }
-}
 
-class DraggableScroll extends StatelessWidget {
-  final List<SongModel> AllSongs;
-  final MusicPlayer Player;
-  const DraggableScroll(
-      {super.key, required this.AllSongs, required this.Player});
-
-  @override
-  Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-      initialChildSize: 0.1,
-      minChildSize: 0.1,
-      maxChildSize: 1,
-      builder: (context, scrollController) {
-        return Container(
-          child: ListViewMusic(
-            scrollController: scrollController,
-            SongsList: AllSongs,
-            Players: Player,
-          ),
-          decoration: BoxDecoration(
-            color: Colors.grey,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(30),
-              topRight: Radius.circular(30),
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class ListViewMusic extends StatelessWidget {
-  final ScrollController scrollController;
-  final List<SongModel> SongsList;
-  final MusicPlayer Players;
-  const ListViewMusic(
-      {super.key,
-      required this.scrollController,
-      required this.SongsList,
-      required this.Players});
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomScrollView(
-      controller: scrollController,
-      slivers: [
-        SliverList(
-          delegate: SliverChildBuilderDelegate((context, index) {
-            return ListTile(
-              title: Text(SongsList[index].title ?? "No Artist"),
-              subtitle: Text(SongsList[index].artist ?? ""),
-              leading: QueryArtworkWidget(
-                keepOldArtwork: true,
-                artworkQuality: FilterQuality.high,
-                id: SongsList[index].id,
-                type: ArtworkType.AUDIO,
-                nullArtworkWidget: const Icon(Icons.image_not_supported,
-                    size: 48, color: Colors.grey),
-              ),
-              onTap: () {
-                Players.stop();
-                Navigator.pop(context);
-
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (context) => Music(
-                            MusicSongs: SongsList,
-                            index: index,
-                          )),
-                );
-              },
-            );
-          }, childCount: SongsList.length),
+  List<Widget> AudioControlTwo(BuildContext context, double volume) {
+    return <Widget>[
+      TextButton(
+        onPressed: () {
+          setState(() {
+            switch (speedSongs) {
+              case 0:
+                _musicPlayer.SpeedX2();
+                speedSongs = 1;
+                break;
+              case 1:
+                _musicPlayer.SpeedX3();
+                speedSongs = 2;
+                break;
+              case 2:
+                _musicPlayer.SpeedX1();
+                speedSongs = 0;
+                break;
+              default:
+            }
+          });
+        },
+        child: (speedSongs == 0)
+            ? const Text(
+                '1.0x',
+                style: TextStyle(
+                    fontSize: 24,
+                    color: Colors.grey,
+                    fontWeight: FontWeight.bold),
+              )
+            : (speedSongs == 1)
+                ? const Text(
+                    '2.0x',
+                    style: TextStyle(
+                        fontSize: 24,
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold),
+                  )
+                : const Text(
+                    '3.0x',
+                    style: TextStyle(
+                        fontSize: 24,
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold),
+                  ),
+      ),
+      TextButton(
+        child: Icon(
+          Icons.volume_up,
+          size: 32,
+          color: Colors.grey,
         ),
-      ],
+        onPressed: () => _showAlertVolume(context, volume),
+      ),
+    ];
+  }
+
+  void _showAlertVolume(BuildContext context, double volume) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Ajustar volumen"),
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            TextButton(
+              onPressed: () => _musicPlayer.VolumenUp(),
+              child: Icon(Icons.volume_up, color: Colors.white),
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.blue,
+              ),
+            ),
+            TextButton(
+              onPressed: () => _musicPlayer.VolumenDowm(),
+              child: Icon(Icons.volume_down, color: Colors.white),
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.blue,
+              ),
+            ),
+          ],
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Entendido'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
     );
   }
 }

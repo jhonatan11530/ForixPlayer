@@ -12,7 +12,7 @@ class MusicPlayer extends ValueNotifier {
   Duration duration = Duration.zero;
   String currentSongTitle = '';
   final AudioPlayer _advancedPlayer = AudioPlayer();
-
+  double volume = 1;
   set players(List<SongModel> value) {
     songs.clear();
     songs = value;
@@ -92,6 +92,35 @@ class MusicPlayer extends ValueNotifier {
   void stop() {
     _advancedPlayer.stop();
     notifyListeners();
+  }
+
+  void SpeedX1() {
+    _advancedPlayer.setSpeed(1);
+    notifyListeners();
+  }
+
+  void SpeedX2() {
+    _advancedPlayer.setSpeed(2);
+    notifyListeners();
+  }
+
+  void SpeedX3() {
+    _advancedPlayer.setSpeed(3);
+    notifyListeners();
+  }
+
+  void VolumenUp() {
+    if (volume < 1) {
+      volume += 0.1;
+      _advancedPlayer.setVolume(volume);
+    }
+  }
+
+  void VolumenDowm() {
+    if (volume != 0) {
+      volume -= 0.1;
+      _advancedPlayer.setVolume(volume);
+    }
   }
 
   void ShuffleModeEnabledTrue() {
