@@ -55,8 +55,13 @@ class _MusicAlbumState extends State<MusicAlbum> {
         ),
         body: Column(
           children: [
-            ImageAlbum(context),
-            Stacks(context),
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                ImageAlbum(context),
+                Stacks(context),
+              ],
+            ),
             ListMusic(context),
           ],
         ),
@@ -65,8 +70,8 @@ class _MusicAlbumState extends State<MusicAlbum> {
   }
 
   Widget ImageAlbum(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.3,
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.4,
       width: MediaQuery.of(context).size.width,
       child: QueryArtworkWidget(
         artworkFit: BoxFit.fill,
@@ -82,19 +87,24 @@ class _MusicAlbumState extends State<MusicAlbum> {
   }
 
   Widget Stacks(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          textAlign: TextAlign.center,
-          songs[widget.index].title,
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        Text(
-          'Artista ${songs[widget.index].artist}',
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-        ),
-      ],
+    return Positioned(
+      bottom: 80,
+      child: Column(
+        children: [
+          Text(
+            textAlign: TextAlign.center,
+            songs[widget.index].title,
+            style: const TextStyle(
+                fontSize: 25, fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+          Text(
+            'Artista ${songs[widget.index].artist}',
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+                fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+        ],
+      ),
     );
   }
 

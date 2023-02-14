@@ -277,32 +277,24 @@ class _MusicState extends State<Music> {
     ];
   }
 
-  List<Widget> AudioControlTwo(
-      BuildContext context, double volume) {
+  List<Widget> AudioControlTwo(BuildContext context, double volume) {
     return <Widget>[
-      TextButton(
+      InkWell(
         child: (speedSongs == 0)
             ? const Text(
                 '1.0x',
-                style: TextStyle(
-                    fontSize: 34, fontWeight: FontWeight.bold, color: Colors.white),
+                style: TextStyle(fontSize: 34, fontWeight: FontWeight.bold),
               )
             : (speedSongs == 1)
                 ? const Text(
                     '2.0x',
-                    style: TextStyle(
-                        fontSize: 34,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                    style: TextStyle(fontSize: 34, fontWeight: FontWeight.bold),
                   )
                 : const Text(
                     '3.0x',
-                    style: TextStyle(
-                        fontSize: 34,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                    style: TextStyle(fontSize: 34, fontWeight: FontWeight.bold),
                   ),
-        onPressed: () {
+        onTap: () {
           setState(() {
             switch (speedSongs) {
               case 0:

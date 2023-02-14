@@ -191,9 +191,10 @@ class _LocalMusicState extends State<LocalMusic> with TickerProviderStateMixin {
             return Card(
               child: InkWell(
                 child: QueryArtworkWidget(
-                  keepOldArtwork: true,
+                  artworkFit: BoxFit.fill,
                   artworkBorder: BorderRadius.circular(0),
                   artworkQuality: FilterQuality.high,
+                  keepOldArtwork: true,
                   id: item.data![index].id,
                   type: ArtworkType.AUDIO,
                   nullArtworkWidget: const Icon(Icons.image_not_supported,
