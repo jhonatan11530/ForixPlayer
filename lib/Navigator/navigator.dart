@@ -6,9 +6,9 @@ import 'package:forixplayer/pages/settings.dart';
 class NavBarButton {
   int _selectedIndex = 0;
   final List<Widget> _pages = [
-    const Home(),
-    const Biblioteca(),
-    const Settings()
+     Home(),
+     Biblioteca(),
+     Settings()
   ];
 }
 
@@ -25,8 +25,7 @@ class MyNavigationBar extends StatefulWidget {
 class _MyNavigationBarState extends State<MyNavigationBar> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
         body: ValueListenableBuilder(
           valueListenable: buttonClickedTimes,
           builder: (context, value, child) {
@@ -58,7 +57,6 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
             )
           ],
         ),
-      ),
-    );
+      );
   }
 }

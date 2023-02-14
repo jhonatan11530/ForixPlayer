@@ -23,23 +23,17 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    Timer.periodic(const Duration(seconds: 1), (Timer t) => _getGreeting());
+    _getGreeting();
   }
 
   void _getGreeting() {
     var hour = DateTime.now().hour;
     if (hour < 12) {
-      setState(() {
-        _Today = '¡Buenos días!';
-      });
+      _Today = '¡Buenos días!';
     } else if (hour < 18) {
-      setState(() {
-        _Today = '¡Buenas tardes!';
-      });
+      _Today = '¡Buenas tardes!';
     } else {
-      setState(() {
-        _Today = '¡Buenas noches!';
-      });
+      _Today = '¡Buenas noches!';
     }
   }
 
@@ -47,6 +41,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     final themeChangeProvider = Provider.of<ChangeTheme>(context);
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: themeChangeProvider.isdarktheme
           ? ThemeData.dark()
           : ThemeData.light(),
@@ -62,8 +57,7 @@ class _HomeState extends State<Home> {
                   Text(
                     _Today,
                     style: const TextStyle(
-                        fontSize: 35,
-                        fontWeight: FontWeight.bold),
+                        fontSize: 35, fontWeight: FontWeight.bold),
                   ),
                   Text(
                     Descripcion,
@@ -145,46 +139,6 @@ class _HomeState extends State<Home> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget buildCardAlbum(
-      BuildContext context, int index, AsyncSnapshot<List<SongModel>> item) {
-    return Container(
-      child: Column(
-        children: [
-          Expanded(
-            child: AspectRatio(
-              aspectRatio: 4 / 4,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Material(
-                  child: InkWell(
-                    child: QueryArtworkWidget(
-                      artworkBorder: BorderRadius.circular(0),
-                      artworkQuality: FilterQuality.high,
-                      id: item.data![index].id,
-                      type: ArtworkType.AUDIO,
-                      nullArtworkWidget: const Icon(Icons.image_not_supported,
-                          size: 62, color: Colors.grey),
-                    ),
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => MusicAlbum(
-                            MusicArtistAll: item.data!,
-                            index: index,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

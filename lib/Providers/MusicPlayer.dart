@@ -18,6 +18,7 @@ class MusicPlayer extends ValueNotifier {
     songs = value;
   }
 
+  // ignore: non_constant_identifier_names
   set IndexMusic(int value) {
     valueIndex = value;
 
@@ -30,6 +31,9 @@ class MusicPlayer extends ValueNotifier {
   get player => _advancedPlayer;
 
   MusicPlayer() : super(0) {
+    _advancedPlayer.setPitch(1.0);
+    _advancedPlayer.setSkipSilenceEnabled(false);
+
     _advancedPlayer.playerStateStream.listen((state) async {});
 
     _advancedPlayer.positionStream.listen((Duration p) {
@@ -175,6 +179,9 @@ class MusicPlayer extends ValueNotifier {
         ),
       );
     }
-    return ConcatenatingAudioSource(children: sources);
+    return ConcatenatingAudioSource(
+        useLazyPreparation: true,
+        shuffleOrder: DefaultShuffleOrder(),
+        children: sources);
   }
 }

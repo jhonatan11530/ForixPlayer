@@ -59,10 +59,11 @@ class _ForixPlayerState extends State<ForixPlayer> {
         child: Consumer<ChangeTheme>(
           builder: (context, Theme, child) {
             return MaterialApp(
+              debugShowCheckedModeBanner: false,
               theme: themeChangeProvider.isdarktheme
                   ? ThemeData.dark()
                   : ThemeData.light(),
-              home: Scaffold(
+              home: const Scaffold(
                 bottomNavigationBar: MyNavigationBar(),
               ),
             );

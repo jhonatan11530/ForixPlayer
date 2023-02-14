@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:forixplayer/Providers/ChangeTheme.dart';
@@ -24,10 +26,11 @@ class _MusicState extends State<Music> {
   @override
   void initState() {
     super.initState();
+    print("object ${widget.MusicSongs}");
+    print("object ${widget.index}");
+  }
 
-    _musicPlayer.players = widget.MusicSongs;
-    _musicPlayer.IndexMusic = widget.index;
-
+  void _getMusic() {
     _musicPlayer.play();
     iconChange = !iconChange;
   }
@@ -36,7 +39,10 @@ class _MusicState extends State<Music> {
   Widget build(BuildContext context) {
     AudioPlayer player = context.watch<MusicPlayer>().player;
     final themeChangeProvider = Provider.of<ChangeTheme>(context);
+    _musicPlayer.players = widget.MusicSongs;
+    _musicPlayer.IndexMusic = widget.index;
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: themeChangeProvider.isdarktheme
           ? ThemeData.dark()
           : ThemeData.light(),
@@ -335,14 +341,32 @@ class _MusicState extends State<Music> {
           children: [
             TextButton(
               onPressed: () => _musicPlayer.VolumenUp(),
-              child: Icon(Icons.volume_up, color: Colors.white),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Subir Volumen",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  Icon(Icons.volume_up, color: Colors.white),
+                ],
+              ),
               style: TextButton.styleFrom(
                 backgroundColor: Colors.blue,
               ),
             ),
             TextButton(
               onPressed: () => _musicPlayer.VolumenDowm(),
-              child: Icon(Icons.volume_down, color: Colors.white),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Bajar Volumen",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  Icon(Icons.volume_down, color: Colors.white),
+                ],
+              ),
               style: TextButton.styleFrom(
                 backgroundColor: Colors.blue,
               ),

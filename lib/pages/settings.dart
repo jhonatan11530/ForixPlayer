@@ -36,6 +36,7 @@ class _SettingsState extends State<Settings> {
     final themeChangeProvider = Provider.of<ChangeTheme>(context);
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: themeChangeProvider.isdarktheme
           ? ThemeData.dark()
           : ThemeData.light(),

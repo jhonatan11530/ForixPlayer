@@ -35,6 +35,7 @@ class _LocalMusicState extends State<LocalMusic> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final themeChangeProvider = Provider.of<ChangeTheme>(context);
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: themeChangeProvider.isdarktheme
           ? ThemeData.dark()
           : ThemeData.light(),
