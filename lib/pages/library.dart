@@ -14,7 +14,7 @@ class _BibliotecaState extends State<Biblioteca> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Text("data"),
+      home: Center(child: Text("data")),
     );
   }
 }

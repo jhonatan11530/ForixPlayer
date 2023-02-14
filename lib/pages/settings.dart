@@ -46,18 +46,15 @@ class _SettingsState extends State<Settings> {
             Container(
               width: double.infinity,
               height: 120,
-              child: Padding(
-                padding: new EdgeInsets.symmetric(horizontal: 0, vertical: 40),
-                child: Row(
-                  children: [
-                    Padding(padding: EdgeInsets.all(15)),
-                    Text(
-                      "Configuracion",
-                      style:
-                          TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Configuracion",
+                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                  ),
+                ],
               ),
             ),
             Expanded(

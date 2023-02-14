@@ -19,7 +19,6 @@ class _HomeState extends State<Home> {
   final OnAudioQuery _audioQuery = OnAudioQuery();
   List<SongModel> songs = [];
   String _Today = '';
-  String Descripcion = "Como Quieres Empezar";
   @override
   void initState() {
     super.initState();
@@ -29,11 +28,11 @@ class _HomeState extends State<Home> {
   void _getGreeting() {
     var hour = DateTime.now().hour;
     if (hour < 12) {
-      _Today = '¡Buenos días!';
+      _Today = 'Bienvenido ¡Buenos días!';
     } else if (hour < 18) {
-      _Today = '¡Buenas tardes!';
+      _Today = 'Bienvenido ¡Buenas tardes!';
     } else {
-      _Today = '¡Buenas noches!';
+      _Today = 'Bienvenido ¡Buenas noches!';
     }
   }
 
@@ -46,27 +45,15 @@ class _HomeState extends State<Home> {
           ? ThemeData.dark()
           : ThemeData.light(),
       home: Scaffold(
+        appBar: AppBar(
+          title: Center(
+            child: Text(
+              _Today,
+            ),
+          ),
+        ),
         body: Column(
           children: [
-            SizedBox(
-              width: double.infinity,
-              height: 120,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    _Today,
-                    style: const TextStyle(
-                        fontSize: 35, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    Descripcion,
-                    style: const TextStyle(
-                        color: Colors.grey, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(4),
