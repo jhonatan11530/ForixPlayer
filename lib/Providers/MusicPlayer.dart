@@ -6,21 +6,19 @@ import 'package:just_audio_background/just_audio_background.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class MusicPlayer extends ValueNotifier {
-  int currentSongID = 0, valueIndex = 0;
+  int currentSongID = 0;
   List<SongModel> songs = [];
   Duration position = Duration.zero;
   Duration duration = Duration.zero;
   String currentSongTitle = '';
   final AudioPlayer _advancedPlayer = AudioPlayer();
   double volume = 1;
-  set players(List<SongModel> value) {
-    songs.clear();
-    songs = value;
-  }
 
-  // ignore: non_constant_identifier_names
-  set IndexMusic(int value) {
-    valueIndex = value;
+  get player => _advancedPlayer;
+
+  InitState(List<SongModel> song, int valueIndex) {
+    songs.clear();
+    songs = song;
 
     _advancedPlayer.setAudioSource(createPlaylist(songs),
         initialIndex: valueIndex,
@@ -28,9 +26,7 @@ class MusicPlayer extends ValueNotifier {
         preload: true);
   }
 
-  get player => _advancedPlayer;
-
-  MusicPlayer() : super(0) {
+  MusicPlayer() : super(null) {
     _advancedPlayer.setPitch(1.0);
     _advancedPlayer.setSkipSilenceEnabled(false);
 
@@ -166,6 +162,7 @@ class MusicPlayer extends ValueNotifier {
 
   ConcatenatingAudioSource createPlaylist(List<SongModel> songs) {
     List<AudioSource> sources = [];
+
     for (var song in songs) {
       sources.add(
         AudioSource.uri(

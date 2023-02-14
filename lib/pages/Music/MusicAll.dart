@@ -26,21 +26,24 @@ class _MusicState extends State<Music> {
   @override
   void initState() {
     super.initState();
-    print("object ${widget.MusicSongs}");
-    print("object ${widget.index}");
+    Timer(
+      Duration(seconds: 2),
+      () => _getMusic(),
+    );
+    _musicPlayer.InitState(widget.MusicSongs, widget.index);
   }
 
   void _getMusic() {
-    _musicPlayer.play();
-    iconChange = !iconChange;
+    setState(() {
+      _musicPlayer.play();
+      iconChange = !iconChange;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     AudioPlayer player = context.watch<MusicPlayer>().player;
     final themeChangeProvider = Provider.of<ChangeTheme>(context);
-    _musicPlayer.players = widget.MusicSongs;
-    _musicPlayer.IndexMusic = widget.index;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: themeChangeProvider.isdarktheme
@@ -50,7 +53,7 @@ class _MusicState extends State<Music> {
         appBar: AppBar(
           leading: IconButton(
               onPressed: () {
-                _musicPlayer.dispose();
+                _musicPlayer.stop();
                 Navigator.pop(context);
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => LocalMusic()),
@@ -68,7 +71,7 @@ class _MusicState extends State<Music> {
                   valueListenable: _musicPlayer,
                   builder: (context, value, child) {
                     return Container(
-                      height: MediaQuery.of(context).size.height * 0.45,
+                      height: MediaQuery.of(context).size.height * 0.5,
                       width: MediaQuery.of(context).size.width,
                       padding: const EdgeInsets.all(10),
                       child: QueryArtworkWidget(
@@ -274,9 +277,31 @@ class _MusicState extends State<Music> {
     ];
   }
 
-  List<Widget> AudioControlTwo(BuildContext context, double volume) {
+  List<Widget> AudioControlTwo(
+      BuildContext context, double volume) {
     return <Widget>[
       TextButton(
+        child: (speedSongs == 0)
+            ? const Text(
+                '1.0x',
+                style: TextStyle(
+                    fontSize: 34, fontWeight: FontWeight.bold, color: Colors.white),
+              )
+            : (speedSongs == 1)
+                ? const Text(
+                    '2.0x',
+                    style: TextStyle(
+                        fontSize: 34,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  )
+                : const Text(
+                    '3.0x',
+                    style: TextStyle(
+                        fontSize: 34,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
         onPressed: () {
           setState(() {
             switch (speedSongs) {
@@ -296,35 +321,14 @@ class _MusicState extends State<Music> {
             }
           });
         },
-        child: (speedSongs == 0)
-            ? const Text(
-                '1.0x',
-                style: TextStyle(
-                    fontSize: 24,
-                    color: Colors.grey,
-                    fontWeight: FontWeight.bold),
-              )
-            : (speedSongs == 1)
-                ? const Text(
-                    '2.0x',
-                    style: TextStyle(
-                        fontSize: 24,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.bold),
-                  )
-                : const Text(
-                    '3.0x',
-                    style: TextStyle(
-                        fontSize: 24,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.bold),
-                  ),
       ),
-      TextButton(
-        child: Icon(
+      const SizedBox(
+        width: 30,
+      ),
+      IconButton(
+        icon: const Icon(
           Icons.volume_up,
-          size: 32,
-          color: Colors.grey,
+          size: 34,
         ),
         onPressed: () => _showAlertVolume(context, volume),
       ),

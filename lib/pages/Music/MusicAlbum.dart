@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:forixplayer/Providers/ChangeTheme.dart';
 import 'package:forixplayer/pages/Music/MusicAll.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:provider/provider.dart';
 
 class MusicAlbum extends StatefulWidget {
   final List<SongModel> MusicArtistAll;
@@ -35,11 +37,14 @@ class _MusicAlbumState extends State<MusicAlbum> {
 
   @override
   Widget build(BuildContext context) {
+    final themeChangeProvider = Provider.of<ChangeTheme>(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: themeChangeProvider.isdarktheme
+          ? ThemeData.dark()
+          : ThemeData.light(),
       home: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.blue,
           leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -50,13 +55,8 @@ class _MusicAlbumState extends State<MusicAlbum> {
         ),
         body: Column(
           children: [
-            Stack(
-              alignment: Alignment.center,
-              children: <Widget>[
-                ImageAlbum(context),
-                Stacks(context),
-              ],
-            ),
+            ImageAlbum(context),
+            Stacks(context),
             ListMusic(context),
           ],
         ),
@@ -66,7 +66,7 @@ class _MusicAlbumState extends State<MusicAlbum> {
 
   Widget ImageAlbum(BuildContext context) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.40,
+      height: MediaQuery.of(context).size.height * 0.3,
       width: MediaQuery.of(context).size.width,
       child: QueryArtworkWidget(
         artworkFit: BoxFit.fill,
@@ -82,27 +82,19 @@ class _MusicAlbumState extends State<MusicAlbum> {
   }
 
   Widget Stacks(BuildContext context) {
-    return Positioned(
-      width: MediaQuery.of(context).size.width,
-      top: MediaQuery.of(context).size.height / 3.5,
-      child: Column(
-        children: [
-          Text(
-            textAlign: TextAlign.center,
-            songs[widget.index].title,
-            style: const TextStyle(
-                fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue),
-          ),
-          Text(
-            'Artista ${songs[widget.index].artist}',
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 9, 137, 241)),
-          ),
-        ],
-      ),
+    return Column(
+      children: [
+        Text(
+          textAlign: TextAlign.center,
+          songs[widget.index].title,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        Text(
+          'Artista ${songs[widget.index].artist}',
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+        ),
+      ],
     );
   }
 
