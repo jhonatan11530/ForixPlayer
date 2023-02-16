@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:forixplayer/Providers/ChangeTheme.dart';
 import 'package:forixplayer/Providers/MusicPlayer.dart';
-import 'package:forixplayer/pages/LocalMusic.dart';
+
 import 'package:just_audio/just_audio.dart';
 import 'package:marquee_widget/marquee_widget.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -55,9 +55,6 @@ class _MusicState extends State<Music> {
               onPressed: () {
                 _musicPlayer.stop();
                 Navigator.pop(context);
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => LocalMusic()),
-                );
               },
               icon: const Icon(Icons.keyboard_arrow_down_sharp)),
           elevation: 0,
@@ -71,11 +68,11 @@ class _MusicState extends State<Music> {
                   valueListenable: _musicPlayer,
                   builder: (context, value, child) {
                     return Container(
-                      height: MediaQuery.of(context).size.height * 0.5,
+                      height: MediaQuery.of(context).size.height / 2.60,
                       width: MediaQuery.of(context).size.width,
-                      padding: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(5),
                       child: QueryArtworkWidget(
-                        artworkFit: BoxFit.contain,
+                        artworkFit: BoxFit.fill,
                         artworkBorder: BorderRadius.circular(0),
                         artworkQuality: FilterQuality.high,
                         keepOldArtwork: true,
@@ -93,8 +90,10 @@ class _MusicState extends State<Music> {
                     return SizedBox(
                       width: MediaQuery.of(context).size.width / 1.5,
                       height: 30,
-                      child:
-                          _buildComplexMarquee(_musicPlayer.currentSongTitle),
+                      child: Center(
+                        child:_buildComplexMarquee(_musicPlayer.currentSongTitle),
+                      )
+                          
                     );
                   },
                 ),
@@ -165,7 +164,7 @@ class _MusicState extends State<Music> {
       directionMarguee: DirectionMarguee.TwoDirection,
       child: Text(
         title,
-        style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
       ),
     );
   }

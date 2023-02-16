@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forixplayer/Providers/ChangeTheme.dart';
-import 'package:forixplayer/pages/Music/MusicAll.dart';
+import 'package:forixplayer/pages/WidgetMusicLocal/Reproductor/MusicAll.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 
@@ -55,13 +55,7 @@ class _MusicAlbumState extends State<MusicAlbum> {
         ),
         body: Column(
           children: [
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                ImageAlbum(context),
-                Stacks(context),
-              ],
-            ),
+            ImageAlbum(context),
             ListMusic(context),
           ],
         ),
@@ -70,39 +64,43 @@ class _MusicAlbumState extends State<MusicAlbum> {
   }
 
   Widget ImageAlbum(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.4,
-      width: MediaQuery.of(context).size.width,
-      child: QueryArtworkWidget(
-        artworkFit: BoxFit.fill,
-        artworkBorder: BorderRadius.circular(0),
-        artworkQuality: FilterQuality.high,
-        keepOldArtwork: true,
-        id: songs[widget.index].id,
-        type: ArtworkType.AUDIO,
-        nullArtworkWidget:
-            const Icon(Icons.image_not_supported, size: 62, color: Colors.grey),
-      ),
-    );
-  }
-
-  Widget Stacks(BuildContext context) {
-    return Positioned(
-      bottom: 80,
-      child: Column(
+    return Padding(
+      padding: const EdgeInsets.all(15),
+      child: Row(
         children: [
-          Text(
-            textAlign: TextAlign.center,
-            songs[widget.index].title,
-            style: const TextStyle(
-                fontSize: 25, fontWeight: FontWeight.bold, color: Colors.white),
+          SizedBox(
+            height: 120,
+            width: 120,
+            child: QueryArtworkWidget(
+              artworkFit: BoxFit.fill,
+              artworkBorder: BorderRadius.circular(0),
+              artworkQuality: FilterQuality.high,
+              keepOldArtwork: true,
+              id: songs[widget.index].id,
+              type: ArtworkType.AUDIO,
+              nullArtworkWidget: const Icon(Icons.image_not_supported,
+                  size: 62, color: Colors.grey),
+            ),
           ),
-          Text(
-            'Artista ${songs[widget.index].artist}',
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-                fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
-          ),
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              children: [
+                Text(
+                  textAlign: TextAlign.center,
+                  songs[widget.index].title,
+                  style: const TextStyle(
+                      fontSize: 15, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  'Artista ${songs[widget.index].artist}',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      fontSize: 10, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          )
         ],
       ),
     );
@@ -149,6 +147,7 @@ class _MusicAlbumState extends State<MusicAlbum> {
                       size: 48, color: Colors.grey),
                 ),
                 onTap: () {
+                  Navigator.of(context);
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) =>
                         Music(MusicSongs: item.data!, index: index),

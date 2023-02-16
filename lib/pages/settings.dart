@@ -41,22 +41,13 @@ class _SettingsState extends State<Settings> {
           ? ThemeData.dark()
           : ThemeData.light(),
       home: Scaffold(
+        appBar: AppBar(
+          title: const Center(
+            child: Text("Configuracion"),
+          ),
+        ),
         body: Column(
           children: [
-            Container(
-              width: double.infinity,
-              height: 120,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Configuracion",
-                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            ),
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.all(0),
@@ -79,7 +70,7 @@ class _SettingsState extends State<Settings> {
                           case "Terminos del servicio":
                             break;
                           case "Acerca de":
-                            _showAlertAcerca(context);
+                            _showAlertAcerca(context, themeChangeProvider);
                             break;
                           default:
                         }
@@ -95,14 +86,21 @@ class _SettingsState extends State<Settings> {
     );
   }
 
-  void _showAlertAcerca(BuildContext context) {
+  void _showAlertAcerca(BuildContext context, ChangeTheme themeChangeProvider) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text("Version de la aplicacion"),
         content: Text(AppVersion),
         actions: <Widget>[
-          TextButton(
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor:
+                  (themeChangeProvider.isdarktheme) ? Colors.grey : Colors.blue,
+              foregroundColor: (themeChangeProvider.isdarktheme)
+                  ? Colors.white
+                  : Colors.white,
+            ),
             child: const Text('Entendido'),
             onPressed: () {
               Navigator.pop(context);
@@ -122,14 +120,23 @@ class _SettingsState extends State<Settings> {
           mainAxisSize: MainAxisSize.min,
           children: [
             SwitchListTile(
-              title: const Text("Modo Noche"),
+              title: const Text(
+                "Modo Noche",
+              ),
               value: themeChangeProvider.isdarktheme,
               onChanged: (value) => themeChangeProvider.isdarktheme = value,
             ),
           ],
         ),
         actions: <Widget>[
-          TextButton(
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor:
+                  (themeChangeProvider.isdarktheme) ? Colors.grey : Colors.blue,
+              foregroundColor: (themeChangeProvider.isdarktheme)
+                  ? Colors.white
+                  : Colors.white,
+            ),
             child: const Text('Entendido'),
             onPressed: () {
               Navigator.pop(context);

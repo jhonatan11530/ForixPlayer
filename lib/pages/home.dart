@@ -2,9 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:forixplayer/Providers/ChangeTheme.dart';
-import 'package:forixplayer/pages/LocalMusic.dart';
-import 'package:forixplayer/pages/Music/MusicAlbum.dart';
-
+import 'package:forixplayer/pages/WidgetMusicLocal/DraggableScrollableLocalMusic.dart';
+import 'package:forixplayer/pages/WidgetMusicLocal/DraggableScrollableLocalMusicAlbum.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 
@@ -19,6 +18,8 @@ class _HomeState extends State<Home> {
   final OnAudioQuery _audioQuery = OnAudioQuery();
   List<SongModel> songs = [];
   String _Today = '';
+  bool _isSheetOpen = false, _isSheetOpenAlbum = false;
+
   @override
   void initState() {
     super.initState();
@@ -52,79 +53,69 @@ class _HomeState extends State<Home> {
             ),
           ),
         ),
-        body: Column(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(4),
-                child: Card(
-                  child: InkWell(
-                    onTap: () {
-                      print("tapped");
-                    },
-                    child: Stack(
-                      children: <Widget>[
-                        Container(
-                          alignment: Alignment.center,
-                          child: Image.asset(
-                            "assets/YouTube-Music-Logo.png",
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        const Align(
-                          alignment: Alignment(0, -0.70),
-                          child: Text(
-                            "Escuchar Musica en ",
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 25),
-                          ),
-                        ),
-                      ],
+        body: Container(
+          child: Stack(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: (themeChangeProvider.isdarktheme)
+                          ? Colors.grey
+                          : Colors.blue,
+                      foregroundColor: (themeChangeProvider.isdarktheme)
+                          ? Colors.white
+                          : Colors.white,
                     ),
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(4),
-                child: Card(
-                  child: InkWell(
-                    onTap: () {
-                      print("tapped");
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => LocalMusic()),
-                      );
+                    child: const Text("Canciones"),
+                    onPressed: () {
+                      setState(() {
+                        _isSheetOpen = true;
+                        _isSheetOpenAlbum = false;
+                      });
                     },
-                    child: Stack(
-                      children: <Widget>[
-                        Container(
-                          alignment: Alignment.center,
-                          child: const Icon(
-                            Icons.music_note,
-                            size: 120,
-                          ),
-                        ),
-                        const Align(
-                          alignment: Alignment(0, -0.70),
-                          child: Text(
-                            "Escuchar Musica En el Equipo",
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 25),
-                          ),
-                        ),
-                      ],
-                    ),
                   ),
-                ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: (themeChangeProvider.isdarktheme)
+                          ? Colors.grey
+                          : Colors.blue,
+                      foregroundColor: (themeChangeProvider.isdarktheme)
+                          ? Colors.white
+                          : Colors.white,
+                    ),
+                    child: const Text("Álbumes"),
+                    onPressed: () {
+                      setState(() {
+                        _isSheetOpen = false;
+                        _isSheetOpenAlbum = true;
+                      });
+                    },
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: (themeChangeProvider.isdarktheme)
+                          ? Colors.grey
+                          : Colors.blue,
+                      foregroundColor: (themeChangeProvider.isdarktheme)
+                          ? Colors.white
+                          : Colors.white,
+                    ),
+                    child: const Text("Artistas"),
+                    onPressed: () {
+                      setState(() {
+                        _isSheetOpen = true;
+                        _isSheetOpenAlbum = false;
+                      });
+                    },
+                  ),
+                ],
               ),
-            ),
-          ],
+              if (_isSheetOpen) DraggableScrollableLocalMusic(),
+              if (_isSheetOpenAlbum) DraggableScrollableLocalMusicAlbum(),
+            ],
+          ),
         ),
       ),
     );
