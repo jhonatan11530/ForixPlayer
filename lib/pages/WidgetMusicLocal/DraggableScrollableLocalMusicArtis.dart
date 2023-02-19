@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:forixplayer/Providers/ChangeTheme.dart';
-import 'package:forixplayer/pages/WidgetMusicLocal/Reproductor/MusicAlbum.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
-class DraggableScrollableLocalMusicAlbum extends StatelessWidget {
+import 'Reproductor/MusicArtist.dart';
+
+class DraggableScrollableLocalMusicArtis extends StatelessWidget {
   bool iconChange = false, iconChangeshuffle = false;
   int iconChangeRepat = 0, currentIndex = 0;
   Duration duration = Duration.zero;
@@ -14,15 +15,6 @@ class DraggableScrollableLocalMusicAlbum extends StatelessWidget {
   final OnAudioQuery _audioQuery = OnAudioQuery();
   late TabController _tabController;
 
-  Future<List<AlbumModel>> AllSongs() {
-    return _audioQuery.queryAlbums(
-      orderType: OrderType.ASC_OR_SMALLER,
-      uriType: UriType.EXTERNAL,
-      ignoreCase: true,
-      sortType: AlbumSortType.ALBUM,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
@@ -31,14 +23,23 @@ class DraggableScrollableLocalMusicAlbum extends StatelessWidget {
       initialChildSize: 0.9,
       builder: (context, scrollController) {
         return Container(
-          child: GridViewAlbum(),
+          child: GridViewArtists(),
         );
       },
     );
   }
 
-  GridViewAlbum() {
-    return FutureBuilder<List<AlbumModel>>(
+  Future<List<ArtistModel>> AllSongs() {
+    return _audioQuery.queryArtists(
+      orderType: OrderType.ASC_OR_SMALLER,
+      uriType: UriType.EXTERNAL,
+      ignoreCase: true,
+      sortType: ArtistSortType.ARTIST,
+    );
+  }
+
+  GridViewArtists() {
+    return FutureBuilder<List<ArtistModel>>(
       future: AllSongs(),
       builder: (context, item) {
         if (item.data == null) {
@@ -53,7 +54,7 @@ class DraggableScrollableLocalMusicAlbum extends StatelessWidget {
         return GridView.builder(
           itemCount: item.data!.length ?? 0,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2),
+              crossAxisCount: 3),
           itemBuilder: (context, index) {
             return Card(
               child: InkWell(
@@ -70,8 +71,7 @@ class DraggableScrollableLocalMusicAlbum extends StatelessWidget {
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => MusicAlbum(
-                        titleAlbum: "Álbum",
+                      builder: (context) => MusicArtist(
                         titleArtist: "Artista",
                         MusicArtistAll: item.data!,
                         index: index,

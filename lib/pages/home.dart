@@ -1,9 +1,8 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:forixplayer/Providers/ChangeTheme.dart';
 import 'package:forixplayer/pages/WidgetMusicLocal/DraggableScrollableLocalMusic.dart';
 import 'package:forixplayer/pages/WidgetMusicLocal/DraggableScrollableLocalMusicAlbum.dart';
+import 'package:forixplayer/pages/WidgetMusicLocal/DraggableScrollableLocalMusicArtis.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 
@@ -15,10 +14,11 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final OnAudioQuery _audioQuery = OnAudioQuery();
   List<SongModel> songs = [];
   String _Today = '';
-  bool _isSheetOpen = false, _isSheetOpenAlbum = false;
+  bool _isSheetOpen = false,
+      _isSheetOpenAlbum = false,
+      _isSheetOpenArtist = false;
 
   @override
   void initState() {
@@ -53,69 +53,71 @@ class _HomeState extends State<Home> {
             ),
           ),
         ),
-        body: Container(
-          child: Stack(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: (themeChangeProvider.isdarktheme)
-                          ? Colors.grey
-                          : Colors.blue,
-                      foregroundColor: (themeChangeProvider.isdarktheme)
-                          ? Colors.white
-                          : Colors.white,
-                    ),
-                    child: const Text("Canciones"),
-                    onPressed: () {
-                      setState(() {
-                        _isSheetOpen = true;
-                        _isSheetOpenAlbum = false;
-                      });
-                    },
+        body: Stack(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: (themeChangeProvider.isdarktheme)
+                        ? Colors.grey
+                        : Colors.blue,
+                    foregroundColor: (themeChangeProvider.isdarktheme)
+                        ? Colors.white
+                        : Colors.white,
                   ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: (themeChangeProvider.isdarktheme)
-                          ? Colors.grey
-                          : Colors.blue,
-                      foregroundColor: (themeChangeProvider.isdarktheme)
-                          ? Colors.white
-                          : Colors.white,
-                    ),
-                    child: const Text("Álbumes"),
-                    onPressed: () {
-                      setState(() {
-                        _isSheetOpen = false;
-                        _isSheetOpenAlbum = true;
-                      });
-                    },
+                  child: const Text("Canciones"),
+                  onPressed: () {
+                    setState(() {
+                      _isSheetOpen = true;
+                      _isSheetOpenAlbum = false;
+                      _isSheetOpenArtist = false;
+                    });
+                  },
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: (themeChangeProvider.isdarktheme)
+                        ? Colors.grey
+                        : Colors.blue,
+                    foregroundColor: (themeChangeProvider.isdarktheme)
+                        ? Colors.white
+                        : Colors.white,
                   ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: (themeChangeProvider.isdarktheme)
-                          ? Colors.grey
-                          : Colors.blue,
-                      foregroundColor: (themeChangeProvider.isdarktheme)
-                          ? Colors.white
-                          : Colors.white,
-                    ),
-                    child: const Text("Artistas"),
-                    onPressed: () {
-                      setState(() {
-                        _isSheetOpen = true;
-                        _isSheetOpenAlbum = false;
-                      });
-                    },
+                  child: const Text("Álbumes"),
+                  onPressed: () {
+                    setState(() {
+                      _isSheetOpen = false;
+                      _isSheetOpenAlbum = true;
+                      _isSheetOpenArtist = false;
+                    });
+                  },
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: (themeChangeProvider.isdarktheme)
+                        ? Colors.grey
+                        : Colors.blue,
+                    foregroundColor: (themeChangeProvider.isdarktheme)
+                        ? Colors.white
+                        : Colors.white,
                   ),
-                ],
-              ),
-              if (_isSheetOpen) DraggableScrollableLocalMusic(),
-              if (_isSheetOpenAlbum) DraggableScrollableLocalMusicAlbum(),
-            ],
-          ),
+                  child: const Text("Artistas"),
+                  onPressed: () {
+                    setState(() {
+                      _isSheetOpen = false;
+                      _isSheetOpenAlbum = false;
+                      _isSheetOpenArtist = true;
+                    });
+                  },
+                ),
+              ],
+            ),
+            if (_isSheetOpen) DraggableScrollableLocalMusic(),
+            if (_isSheetOpenAlbum) DraggableScrollableLocalMusicAlbum(),
+            if (_isSheetOpenArtist) DraggableScrollableLocalMusicArtis(),
+          ],
         ),
       ),
     );

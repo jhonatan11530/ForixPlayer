@@ -9,7 +9,7 @@ import audio_service
 import audio_session
 import just_audio
 import package_info_plus
-import path_provider_macos
+import path_provider_foundation
 import shared_preferences_foundation
 import sqflite
 

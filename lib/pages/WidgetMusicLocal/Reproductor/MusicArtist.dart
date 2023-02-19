@@ -4,25 +4,23 @@ import 'package:forixplayer/pages/WidgetMusicLocal/Reproductor/Reproductor.dart'
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 
-class MusicAlbum extends StatefulWidget {
-  final List<AlbumModel> MusicArtistAll;
+class MusicArtist extends StatefulWidget {
+  final List<ArtistModel> MusicArtistAll;
   final int index;
-  final String titleAlbum;
   final String titleArtist;
-  const MusicAlbum(
+  const MusicArtist(
       {super.key,
       required this.MusicArtistAll,
       required this.index,
-      required this.titleAlbum,
       required this.titleArtist});
 
   @override
-  State<MusicAlbum> createState() => _MusicAlbumState();
+  State<MusicArtist> createState() => _MusicArtistState();
 }
 
-class _MusicAlbumState extends State<MusicAlbum> {
+class _MusicArtistState extends State<MusicArtist> {
   final OnAudioQuery _audioQuery = OnAudioQuery();
-  List<AlbumModel> songs = [];
+  List<ArtistModel> songs = [];
 
   @override
   void initState() {
@@ -33,8 +31,8 @@ class _MusicAlbumState extends State<MusicAlbum> {
 
   Future<List<SongModel>> SongsAlbum() {
     return _audioQuery.queryAudiosFrom(
-      AudiosFromType.ALBUM,
-      '${songs[widget.index].album}',
+      AudiosFromType.ARTIST,
+      '${songs[widget.index].artist}',
       sortType: SongSortType.TITLE,
       orderType: OrderType.ASC_OR_SMALLER,
       ignoreCase: true,
@@ -57,7 +55,7 @@ class _MusicAlbumState extends State<MusicAlbum> {
               },
               icon: const Icon(Icons.arrow_back)),
           elevation: 0,
-          title: Text('${widget.titleAlbum} ${songs[widget.index].album}'),
+          title: Text('${widget.titleArtist} ${songs[widget.index].artist}'),
         ),
         body: Column(
           children: [
@@ -92,18 +90,19 @@ class _MusicAlbumState extends State<MusicAlbum> {
             child: Column(
               children: [
                 Text(
-                  songs[widget.index].album,
+                  '${songs[widget.index].artist}',
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 15, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  '${widget.titleArtist} ${songs[widget.index].artist}',
+                  'Total Canciones ${songs[widget.index].numberOfAlbums}',
                   style: const TextStyle(
                       fontSize: 10, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
-          ),
+          )
         ],
       ),
     );
