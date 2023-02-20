@@ -1,19 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:forixplayer/Providers/ChangeTheme.dart';
+import 'package:forixplayer/class/SeachMusic.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-
 import 'Reproductor/MusicArtist.dart';
 
 class DraggableScrollableLocalMusicArtis extends StatelessWidget {
-  bool iconChange = false, iconChangeshuffle = false;
-  int iconChangeRepat = 0, currentIndex = 0;
-  Duration duration = Duration.zero;
-  Duration position = Duration.zero;
-  List<SongModel> songs = [];
-  String currentSongTitle = '';
-  ChangeTheme changeTheme = ChangeTheme();
-  final OnAudioQuery _audioQuery = OnAudioQuery();
-  late TabController _tabController;
+  final MusicLocal _musicLocal = MusicLocal();
 
   @override
   Widget build(BuildContext context) {
@@ -29,18 +20,9 @@ class DraggableScrollableLocalMusicArtis extends StatelessWidget {
     );
   }
 
-  Future<List<ArtistModel>> AllSongs() {
-    return _audioQuery.queryArtists(
-      orderType: OrderType.ASC_OR_SMALLER,
-      uriType: UriType.EXTERNAL,
-      ignoreCase: true,
-      sortType: ArtistSortType.ARTIST,
-    );
-  }
-
   GridViewArtists() {
     return FutureBuilder<List<ArtistModel>>(
-      future: AllSongs(),
+      future: _musicLocal.AllSongsArtists(),
       builder: (context, item) {
         if (item.data == null) {
           return Container(
@@ -72,7 +54,7 @@ class DraggableScrollableLocalMusicArtis extends StatelessWidget {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => MusicArtist(
-                        titleArtist: "Artista",
+                        titleArtist: _musicLocal.titleArtist(),
                         MusicArtistAll: item.data!,
                         index: index,
                       ),

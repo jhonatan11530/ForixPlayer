@@ -19,7 +19,7 @@ class _MusicState extends State<Music> {
   bool iconChange = false, iconChangeshuffle = false;
   int iconChangeRepat = 0, speedSongs = 0;
   double volume = 1;
-  final MusicPlayer _musicPlayer = MusicPlayer();
+  MusicPlayer _musicPlayer = MusicPlayer();
   @override
   void initState() {
     super.initState();
@@ -85,13 +85,12 @@ class _MusicState extends State<Music> {
                   valueListenable: _musicPlayer,
                   builder: (context, value, child) {
                     return SizedBox(
-                      width: MediaQuery.of(context).size.width / 1.5,
-                      height: 30,
-                      child: Center(
-                        child:_buildComplexMarquee(_musicPlayer.currentSongTitle),
-                      )
-                          
-                    );
+                        width: MediaQuery.of(context).size.width / 1.5,
+                        height: 30,
+                        child: Center(
+                          child: _buildComplexMarquee(
+                              _musicPlayer.currentSongTitle),
+                        ));
                   },
                 ),
                 ValueListenableBuilder(

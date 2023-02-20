@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forixplayer/Providers/ChangeTheme.dart';
+import 'package:forixplayer/pages/WidgetMusic/MusicHome.dart';
 import 'package:forixplayer/pages/WidgetMusicLocal/DraggableScrollableLocalMusic.dart';
 import 'package:forixplayer/pages/WidgetMusicLocal/DraggableScrollableLocalMusicAlbum.dart';
 import 'package:forixplayer/pages/WidgetMusicLocal/DraggableScrollableLocalMusicArtis.dart';
@@ -114,6 +115,7 @@ class _HomeState extends State<Home> {
                 ),
               ],
             ),
+            MusicHome(),
             if (_isSheetOpen) DraggableScrollableLocalMusic(),
             if (_isSheetOpenAlbum) DraggableScrollableLocalMusicAlbum(),
             if (_isSheetOpenArtist) DraggableScrollableLocalMusicArtis(),

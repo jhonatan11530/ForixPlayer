@@ -16,20 +16,17 @@ class MusicPlayer extends ValueNotifier {
 
   get player => _advancedPlayer;
 
-  InitState(List<SongModel> song, int valueIndex) {
+  InitState(List<SongModel> song, int valueIndex) async {
     songs.clear();
     songs = song;
 
-    _advancedPlayer.setAudioSource(createPlaylist(songs),
+    await _advancedPlayer.setAudioSource(createPlaylist(songs),
         initialIndex: valueIndex,
         initialPosition: Duration.zero,
         preload: true);
   }
 
   MusicPlayer() : super(null) {
-    _advancedPlayer.setPitch(1.0);
-    _advancedPlayer.setSkipSilenceEnabled(false);
-
     _advancedPlayer.playerStateStream.listen((state) async {});
 
     _advancedPlayer.positionStream.listen((Duration p) {

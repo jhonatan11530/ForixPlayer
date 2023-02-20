@@ -72,13 +72,11 @@ class _ForixPlayerState extends State<ForixPlayer> {
   }
 
   void requestStoragePermission() async {
-    //only if the platform is not web, coz web have no permissions
     if (!kIsWeb) {
       bool permissionStatus = await _audioQuery.permissionsStatus();
       if (!permissionStatus) {
         await _audioQuery.permissionsRequest();
       }
-      //ensure build method is called
       setState(() {});
     }
   }
