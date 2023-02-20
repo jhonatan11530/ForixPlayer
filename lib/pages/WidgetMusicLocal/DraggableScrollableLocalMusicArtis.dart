@@ -6,6 +6,8 @@ import 'Reproductor/MusicArtist.dart';
 class DraggableScrollableLocalMusicArtis extends StatelessWidget {
   final MusicLocal _musicLocal = MusicLocal();
 
+  DraggableScrollableLocalMusicArtis({super.key});
+
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
@@ -36,7 +38,8 @@ class DraggableScrollableLocalMusicArtis extends StatelessWidget {
         return GridView.builder(
           itemCount: item.data!.length ?? 0,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3),
+            crossAxisCount: 3,
+          ),
           itemBuilder: (context, index) {
             return Card(
               child: InkWell(

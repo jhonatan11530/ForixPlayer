@@ -17,7 +17,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   List<SongModel> songs = [];
   String _Today = '';
-  bool _isSheetOpen = false,
+  bool _isSheetOpenHome = true,
+      _isSheetOpen = false,
       _isSheetOpenAlbum = false,
       _isSheetOpenArtist = false;
 
@@ -68,9 +69,29 @@ class _HomeState extends State<Home> {
                         ? Colors.white
                         : Colors.white,
                   ),
+                  child: const Text("Principal"),
+                  onPressed: () {
+                    setState(() {
+                      _isSheetOpenHome = true;
+                      _isSheetOpen = false;
+                      _isSheetOpenAlbum = false;
+                      _isSheetOpenArtist = false;
+                    });
+                  },
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: (themeChangeProvider.isdarktheme)
+                        ? Colors.grey
+                        : Colors.blue,
+                    foregroundColor: (themeChangeProvider.isdarktheme)
+                        ? Colors.white
+                        : Colors.white,
+                  ),
                   child: const Text("Canciones"),
                   onPressed: () {
                     setState(() {
+                      _isSheetOpenHome = false;
                       _isSheetOpen = true;
                       _isSheetOpenAlbum = false;
                       _isSheetOpenArtist = false;
@@ -89,6 +110,7 @@ class _HomeState extends State<Home> {
                   child: const Text("Álbumes"),
                   onPressed: () {
                     setState(() {
+                      _isSheetOpenHome = false;
                       _isSheetOpen = false;
                       _isSheetOpenAlbum = true;
                       _isSheetOpenArtist = false;
@@ -107,6 +129,7 @@ class _HomeState extends State<Home> {
                   child: const Text("Artistas"),
                   onPressed: () {
                     setState(() {
+                      _isSheetOpenHome = false;
                       _isSheetOpen = false;
                       _isSheetOpenAlbum = false;
                       _isSheetOpenArtist = true;
@@ -115,7 +138,7 @@ class _HomeState extends State<Home> {
                 ),
               ],
             ),
-            MusicHome(),
+            if (_isSheetOpenHome) MusicHome(),
             if (_isSheetOpen) DraggableScrollableLocalMusic(),
             if (_isSheetOpenAlbum) DraggableScrollableLocalMusicAlbum(),
             if (_isSheetOpenArtist) DraggableScrollableLocalMusicArtis(),

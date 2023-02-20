@@ -3,29 +3,30 @@ import 'package:flutter/material.dart';
 import 'package:forixplayer/pages/WidgetMusicLocal/DraggableScrollableLocalMusic.dart';
 
 class MusicHome extends StatelessWidget {
-  DraggableScrollableLocalMusic music = new DraggableScrollableLocalMusic();
+  DraggableScrollableLocalMusic music = DraggableScrollableLocalMusic();
+
   @override
   Widget build(BuildContext context) {
-    ScrollController _mycontroller1 = new ScrollController();
+    ScrollController mycontroller1 = ScrollController();
     return DraggableScrollableSheet(
       minChildSize: 0.0,
       maxChildSize: 0.9,
       initialChildSize: 0.9,
       builder: (context, scrollController) {
         return SingleChildScrollView(
-          controller: _mycontroller1,
+          controller: mycontroller1,
           child: Column(
             children: <Widget>[
-              Text("De tu biblioteca", style: TextStyle(fontSize: 30)),
+              const Text("De tu biblioteca", style: TextStyle(fontSize: 30)),
               SizedBox(
                 height: 150,
-                child: music.MusicLocalListViewHorizontal(),
+                child: music.MusicLocalListViewHorizontalHome(),
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height / 2,
-                child: music.MusicLocalListViewVertical(),
+                child: music.MusicLocalListViewVerticalHome(),
               ),
-              Text("asdasdasd")
+              const Text("Musica Recomendada", style: TextStyle(fontSize: 30)),
             ],
           ),
         );

@@ -57,85 +57,78 @@ class _MusicState extends State<Music> {
           elevation: 0,
           title: Text('${_musicPlayer.currentSongTitle}'),
         ),
-        body: Stack(
-          children: [
-            Column(
-              children: [
-                ValueListenableBuilder(
-                  valueListenable: _musicPlayer,
-                  builder: (context, value, child) {
-                    return Container(
-                      height: MediaQuery.of(context).size.height / 2.60,
-                      width: MediaQuery.of(context).size.width,
-                      padding: const EdgeInsets.all(5),
-                      child: QueryArtworkWidget(
-                        artworkFit: BoxFit.fill,
-                        artworkBorder: BorderRadius.circular(0),
-                        artworkQuality: FilterQuality.high,
-                        keepOldArtwork: true,
-                        id: _musicPlayer.currentSongID,
-                        type: ArtworkType.AUDIO,
-                        nullArtworkWidget: const Icon(Icons.image_not_supported,
-                            size: 120, color: Colors.grey),
-                      ),
-                    );
-                  },
-                ),
-                ValueListenableBuilder(
-                  valueListenable: _musicPlayer,
-                  builder: (context, value, child) {
-                    return SizedBox(
+        body: Column(
+          children: <Widget>[
+            Expanded(
+              child: ValueListenableBuilder(
+                valueListenable: _musicPlayer,
+                builder: (context, value, child) {
+                  return Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.all(10),
+                    child: QueryArtworkWidget(
+                      artworkFit: BoxFit.fill,
+                      artworkBorder: BorderRadius.circular(0),
+                      artworkQuality: FilterQuality.high,
+                      keepOldArtwork: true,
+                      id: _musicPlayer.currentSongID,
+                      type: ArtworkType.AUDIO,
+                      nullArtworkWidget: const Icon(Icons.image_not_supported,
+                          size: 120, color: Colors.grey),
+                    ),
+                  );
+                },
+              ),
+            ),
+            Expanded(
+              child: ValueListenableBuilder(
+                valueListenable: _musicPlayer,
+                builder: (context, value, child) {
+                  return Column(
+                    children: [
+                      SizedBox(
                         width: MediaQuery.of(context).size.width / 1.5,
                         height: 30,
                         child: Center(
                           child: _buildComplexMarquee(
                               _musicPlayer.currentSongTitle),
-                        ));
-                  },
-                ),
-                ValueListenableBuilder(
-                  valueListenable: _musicPlayer,
-                  builder: (context, value, child) {
-                    return Slider(
-                      value: _musicPlayer.PositionSlider(),
-                      max: _musicPlayer.DurationSlider() + 0.0,
-                      onChanged: (value) {
-                        setState(() {
-                          player.seek(Duration(seconds: value.toInt()));
-                        });
-                      },
-                    );
-                  },
-                ),
-                ValueListenableBuilder(
-                  valueListenable: _musicPlayer,
-                  builder: (context, value, child) {
-                    return Padding(
-                      padding: const EdgeInsets.only(left: 15, right: 15),
-                      child: Row(
+                        ),
+                      ),
+                      Slider(
+                        value: _musicPlayer.PositionSlider(),
+                        max: _musicPlayer.DurationSlider() + 0.0,
+                        onChanged: (value) {
+                          setState(() {
+                            player.seek(Duration(seconds: value.toInt()));
+                          });
+                        },
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15, right: 15),
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(FormatTime(_musicPlayer.Positions())),
                             Text(FormatTime(_musicPlayer.Durations()!)),
-                          ]),
-                    );
-                  },
-                ),
-                Expanded(
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: AudioControlTwo(context, volume),
+                          ],
+                        ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: AudioControl(context),
+                      Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: AudioControlTwo(context, volume),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: AudioControl(context),
+                          ),
+                        ],
                       ),
                     ],
-                  ),
-                ),
-              ],
+                  );
+                },
+              ),
             ),
           ],
         ),

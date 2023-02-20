@@ -3,31 +3,16 @@ import 'package:on_audio_query/on_audio_query.dart';
 class MusicLocal {
   final OnAudioQuery _audioQuery = OnAudioQuery();
 
-  Future<List<SongModel>> AllSongs() {
-    return _audioQuery.querySongs(
-      sortType: SongSortType.TITLE,
-      orderType: OrderType.ASC_OR_SMALLER,
-      uriType: UriType.EXTERNAL,
-      ignoreCase: true,
-    );
+  Future<List<SongModel>> AllSongs() async {
+    return await _audioQuery.querySongs();
   }
 
-  Future<List<AlbumModel>> AllSongsAlbums() {
-    return _audioQuery.queryAlbums(
-      orderType: OrderType.ASC_OR_SMALLER,
-      uriType: UriType.EXTERNAL,
-      ignoreCase: true,
-      sortType: AlbumSortType.ALBUM,
-    );
+  Future<List<AlbumModel>> AllSongsAlbums() async {
+    return await _audioQuery.queryAlbums();
   }
 
-  Future<List<ArtistModel>> AllSongsArtists() {
-    return _audioQuery.queryArtists(
-      orderType: OrderType.ASC_OR_SMALLER,
-      uriType: UriType.EXTERNAL,
-      ignoreCase: true,
-      sortType: ArtistSortType.ARTIST,
-    );
+  Future<List<ArtistModel>> AllSongsArtists() async {
+    return await _audioQuery.queryArtists();
   }
 
   titleAlbum() {
