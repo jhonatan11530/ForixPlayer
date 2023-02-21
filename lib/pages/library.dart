@@ -18,7 +18,14 @@ class _BibliotecaState extends State<Biblioteca> {
           ? ThemeData.dark()
           : ThemeData.light(),
       debugShowCheckedModeBanner: false,
-      home: const Scaffold(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Center(
+            child: Text(
+              "asdasd",
+            ),
+          ),
+        ),
         body: Text("asdasdas xfcvxcv"),
       ),
     );

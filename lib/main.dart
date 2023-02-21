@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:forixplayer/Navigator/navigator.dart';
 import 'package:forixplayer/Providers/ChangeTheme.dart';
 import 'package:forixplayer/Providers/MusicPlayer.dart';
+import 'package:forixplayer/pages/home.dart';
+import 'package:forixplayer/pages/library.dart';
+import 'package:forixplayer/pages/settings.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +25,8 @@ void main() async {
   ], child: const ForixPlayer()));
 }
 
+ValueNotifier<int> buttonClickedTimes = ValueNotifier(0);
+
 class ForixPlayer extends StatefulWidget {
   const ForixPlayer({super.key});
 
@@ -33,8 +37,13 @@ class ForixPlayer extends StatefulWidget {
 class _ForixPlayerState extends State<ForixPlayer> {
   ChangeTheme themeChangeProvider = ChangeTheme();
   final OnAudioQuery _audioQuery = OnAudioQuery();
-  // primary color nabvar - second color footer - tree color theme body
-  List<Color> _colorAplicacion = [Colors.blue, Colors.blue, Colors.white];
+  final List<Widget> _pages = [
+    const Home(),
+    const Biblioteca(),
+    const Settings(),
+    const Settings()
+  ];
+  int _selectedIndex = 0;
 
   @override
   void initState() {
@@ -63,8 +72,52 @@ class _ForixPlayerState extends State<ForixPlayer> {
               theme: themeChangeProvider.isdarktheme
                   ? ThemeData.dark()
                   : ThemeData.light(),
-              home: const Scaffold(
-                bottomNavigationBar: MyNavigationBar(),
+              home: Scaffold(
+                body: ValueListenableBuilder(
+                  valueListenable: buttonClickedTimes,
+                  builder: (context, value, child) {
+                    return _pages[value];
+                  },
+                ),
+                bottomNavigationBar: BottomNavigationBar(
+                  selectedIconTheme: IconThemeData(
+                      color: (themeChangeProvider.isdarktheme)
+                          ? Colors.white
+                          : Colors.black87),
+                  selectedItemColor: (themeChangeProvider.isdarktheme)
+                      ? Colors.white
+                      : Colors.black87,
+                  unselectedItemColor: (themeChangeProvider.isdarktheme)
+                      ? Colors.grey
+                      : Colors.grey,
+                  unselectedIconTheme: IconThemeData(
+                      color: (themeChangeProvider.isdarktheme)
+                          ? Colors.grey
+                          : Colors.grey),
+                  showSelectedLabels: true,
+                  showUnselectedLabels: true,
+                  currentIndex: _selectedIndex,
+                  onTap: (value) {
+                    setState(() {
+                      _selectedIndex = value;
+                      buttonClickedTimes.value = value;
+                    });
+                  },
+                  items: const <BottomNavigationBarItem>[
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.home),
+                      label: 'Principal',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.video_collection_sharp),
+                      label: 'Biblioteca',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: const Icon(Icons.settings),
+                      label: 'Herramientas',
+                    ),
+                  ],
+                ),
               ),
             );
           },

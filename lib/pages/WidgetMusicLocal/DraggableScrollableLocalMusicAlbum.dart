@@ -48,7 +48,7 @@ class DraggableScrollableLocalMusicAlbum extends StatelessWidget {
                   artworkQuality: FilterQuality.high,
                   keepOldArtwork: true,
                   id: item.data![index].id,
-                  type: ArtworkType.AUDIO,
+                  type: ArtworkType.ALBUM,
                   nullArtworkWidget: const Icon(Icons.image_not_supported,
                       size: 62, color: Colors.grey),
                 ),

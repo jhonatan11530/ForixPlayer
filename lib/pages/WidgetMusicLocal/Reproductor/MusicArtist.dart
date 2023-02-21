@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forixplayer/Providers/ChangeTheme.dart';
+import 'package:forixplayer/class/SeachMusic.dart';
 import 'package:forixplayer/pages/WidgetMusicLocal/Reproductor/Reproductor.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
@@ -19,7 +20,7 @@ class MusicArtist extends StatefulWidget {
 }
 
 class _MusicArtistState extends State<MusicArtist> {
-  final OnAudioQuery _audioQuery = OnAudioQuery();
+  final MusicLocal _musicLocal = MusicLocal();
   List<ArtistModel> songs = [];
 
   @override
@@ -27,16 +28,6 @@ class _MusicArtistState extends State<MusicArtist> {
     super.initState();
     songs.clear();
     songs = widget.MusicArtistAll;
-  }
-
-  Future<List<SongModel>> SongsAlbum() {
-    return _audioQuery.queryAudiosFrom(
-      AudiosFromType.ARTIST,
-      '${songs[widget.index].artist}',
-      sortType: SongSortType.TITLE,
-      orderType: OrderType.ASC_OR_SMALLER,
-      ignoreCase: true,
-    );
   }
 
   @override
@@ -81,7 +72,7 @@ class _MusicArtistState extends State<MusicArtist> {
               artworkQuality: FilterQuality.high,
               keepOldArtwork: true,
               id: songs[widget.index].id,
-              type: ArtworkType.AUDIO,
+              type: ArtworkType.ARTIST,
               nullArtworkWidget: const Icon(Icons.image_not_supported,
                   size: 62, color: Colors.grey),
             ),
@@ -111,7 +102,7 @@ class _MusicArtistState extends State<MusicArtist> {
   Widget ListMusic(BuildContext context) {
     return Expanded(
       child: FutureBuilder<List<SongModel>>(
-        future: SongsAlbum(),
+        future: _musicLocal.AllSongsArtistsFiltre(songs[widget.index].artist),
         builder: (context, item) {
           if (item.data == null) {
             return Center(

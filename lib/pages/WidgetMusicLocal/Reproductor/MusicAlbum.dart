@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forixplayer/Providers/ChangeTheme.dart';
+import 'package:forixplayer/class/SeachMusic.dart';
 import 'package:forixplayer/pages/WidgetMusicLocal/Reproductor/Reproductor.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +22,7 @@ class MusicAlbum extends StatefulWidget {
 }
 
 class _MusicAlbumState extends State<MusicAlbum> {
-  final OnAudioQuery _audioQuery = OnAudioQuery();
+  final MusicLocal _musicLocal = MusicLocal();
   List<AlbumModel> songs = [];
 
   @override
@@ -29,16 +30,6 @@ class _MusicAlbumState extends State<MusicAlbum> {
     super.initState();
     songs.clear();
     songs = widget.MusicArtistAll;
-  }
-
-  Future<List<SongModel>> SongsAlbum() {
-    return _audioQuery.queryAudiosFrom(
-      AudiosFromType.ALBUM,
-      '${songs[widget.index].album}',
-      sortType: SongSortType.TITLE,
-      orderType: OrderType.ASC_OR_SMALLER,
-      ignoreCase: true,
-    );
   }
 
   @override
@@ -83,7 +74,7 @@ class _MusicAlbumState extends State<MusicAlbum> {
               artworkQuality: FilterQuality.high,
               keepOldArtwork: true,
               id: songs[widget.index].id,
-              type: ArtworkType.AUDIO,
+              type: ArtworkType.ALBUM,
               nullArtworkWidget: const Icon(Icons.image_not_supported,
                   size: 62, color: Colors.grey),
             ),
@@ -94,7 +85,8 @@ class _MusicAlbumState extends State<MusicAlbum> {
                 Text(
                   songs[widget.index].album,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 15, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   '${widget.titleArtist} ${songs[widget.index].artist}',
@@ -112,7 +104,7 @@ class _MusicAlbumState extends State<MusicAlbum> {
   Widget ListMusic(BuildContext context) {
     return Expanded(
       child: FutureBuilder<List<SongModel>>(
-        future: SongsAlbum(),
+        future: _musicLocal.AllSongsAlbumsFiltre(songs[widget.index].album),
         builder: (context, item) {
           if (item.data == null) {
             return Center(

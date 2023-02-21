@@ -144,7 +144,6 @@ class DraggableScrollableLocalMusic extends StatelessWidget {
           slivers: [
             SliverList(
               delegate: SliverChildBuilderDelegate((context, index) {
-                print("object ${item.data![index].id}");
                 return SizedBox(
                   width: MediaQuery.of(context).size.width * 0.45,
                   height: MediaQuery.of(context).size.height * 0.45,
@@ -155,7 +154,7 @@ class DraggableScrollableLocalMusic extends StatelessWidget {
                         artworkBorder: BorderRadius.circular(0),
                         artworkQuality: FilterQuality.high,
                         id: item.data![index].id,
-                        type: ArtworkType.AUDIO,
+                        type: ArtworkType.ALBUM,
                         nullArtworkWidget: const Icon(Icons.image_not_supported,
                             size: 48, color: Colors.grey),
                       ),
