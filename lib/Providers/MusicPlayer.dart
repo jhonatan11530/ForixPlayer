@@ -5,7 +5,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
-class MusicPlayer extends ValueNotifier {
+class MusicPlayer extends ChangeNotifier  {
   int currentSongID = 0;
   List<SongModel> songs = [];
   Duration position = Duration.zero;
@@ -26,7 +26,7 @@ class MusicPlayer extends ValueNotifier {
         preload: true);
   }
 
-  MusicPlayer() : super(null) {
+  MusicPlayer() {
     _advancedPlayer.playerStateStream.listen((state) async {});
 
     _advancedPlayer.positionStream.listen((Duration p) {

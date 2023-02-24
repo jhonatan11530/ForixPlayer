@@ -59,35 +59,37 @@ class _MusicArtistState extends State<MusicArtist> {
   }
 
   Widget ImageAlbum(BuildContext context) {
-    return Padding(
+    return Container(
       padding: const EdgeInsets.all(15),
       child: Row(
         children: [
-          SizedBox(
-            height: 120,
-            width: 120,
-            child: QueryArtworkWidget(
-              artworkFit: BoxFit.fill,
-              artworkBorder: BorderRadius.circular(0),
-              artworkQuality: FilterQuality.high,
-              keepOldArtwork: true,
-              id: songs[widget.index].id,
-              type: ArtworkType.ARTIST,
-              nullArtworkWidget: const Icon(Icons.image_not_supported,
-                  size: 62, color: Colors.grey),
-            ),
+          QueryArtworkWidget(
+            artworkWidth: 120,
+            artworkHeight: 120,
+            artworkFit: BoxFit.fill,
+            artworkBorder: BorderRadius.circular(0),
+            artworkQuality: FilterQuality.high,
+            keepOldArtwork: true,
+            id: songs[widget.index].id,
+            type: ArtworkType.ARTIST,
+            nullArtworkWidget: const Icon(Icons.image_not_supported,
+                size: 62, color: Colors.grey),
           ),
           SizedBox(
+            width: 200,
             child: Column(
               children: [
                 Text(
-                  '${songs[widget.index].artist}',
+                  songs[widget.index].artist,
+                  textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
+                  maxLines: 3,
                   style: const TextStyle(
                       fontSize: 15, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   'Total Canciones ${songs[widget.index].numberOfAlbums}',
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                       fontSize: 10, fontWeight: FontWeight.bold),
                 ),

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:forixplayer/Providers/ChangeTheme.dart';
 import 'package:forixplayer/class/SeachMusic.dart';
@@ -61,35 +63,37 @@ class _MusicAlbumState extends State<MusicAlbum> {
   }
 
   Widget ImageAlbum(BuildContext context) {
-    return Padding(
+    return Container(
       padding: const EdgeInsets.all(15),
       child: Row(
         children: [
-          SizedBox(
-            height: 120,
-            width: 120,
-            child: QueryArtworkWidget(
-              artworkFit: BoxFit.fill,
-              artworkBorder: BorderRadius.circular(0),
-              artworkQuality: FilterQuality.high,
-              keepOldArtwork: true,
-              id: songs[widget.index].id,
-              type: ArtworkType.ALBUM,
-              nullArtworkWidget: const Icon(Icons.image_not_supported,
-                  size: 62, color: Colors.grey),
-            ),
+          QueryArtworkWidget(
+            artworkWidth: 120,
+            artworkHeight: 120,
+            artworkFit: BoxFit.fill,
+            artworkBorder: BorderRadius.circular(0),
+            artworkQuality: FilterQuality.high,
+            keepOldArtwork: true,
+            id: songs[widget.index].id,
+            type: ArtworkType.ALBUM,
+            nullArtworkWidget: const Icon(Icons.image_not_supported,
+                size: 62, color: Colors.grey),
           ),
           SizedBox(
+            width: 200,
             child: Column(
               children: [
                 Text(
                   songs[widget.index].album,
+                  textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
+                  maxLines: 3,
                   style: const TextStyle(
-                      fontSize: 15, fontWeight: FontWeight.bold),
+                     fontSize: 15, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   '${widget.titleArtist} ${songs[widget.index].artist}',
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                       fontSize: 10, fontWeight: FontWeight.bold),
                 ),
@@ -108,7 +112,7 @@ class _MusicAlbumState extends State<MusicAlbum> {
         builder: (context, item) {
           if (item.data == null) {
             return Center(
-              child: Container(
+              child: SizedBox(
                   width: 100,
                   height: 100,
                   child: const CircularProgressIndicator()),
@@ -120,7 +124,7 @@ class _MusicAlbumState extends State<MusicAlbum> {
             itemBuilder: (context, index) {
               if (item.data == null) {
                 return Center(
-                  child: Container(
+                  child: SizedBox(
                       width: 100,
                       height: 100,
                       child: CircularProgressIndicator()),

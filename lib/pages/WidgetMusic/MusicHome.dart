@@ -23,7 +23,7 @@ class MusicHome extends StatelessWidget {
                 child: music.MusicLocalListViewHorizontalHome(),
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height / 2,
+                height: MediaQuery.of(context).size.height / 1.7,
                 child: music.MusicLocalListViewVerticalHome(),
               ),
               const Text("Musica Recomendada", style: TextStyle(fontSize: 30)),

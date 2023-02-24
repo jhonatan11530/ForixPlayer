@@ -24,7 +24,7 @@ class _MusicState extends State<Music> {
   void initState() {
     super.initState();
     Timer(
-      Duration(seconds: 2),
+      const Duration(seconds: 2),
       () => _getMusic(),
     );
     _musicPlayer.InitState(widget.MusicSongs, widget.index);
@@ -50,84 +50,88 @@ class _MusicState extends State<Music> {
         appBar: AppBar(
           leading: IconButton(
               onPressed: () {
-                _musicPlayer.stop();
+                //_musicPlayer.stop();
                 Navigator.pop(context);
               },
               icon: const Icon(Icons.keyboard_arrow_down_sharp)),
           elevation: 0,
-          title: Text('${_musicPlayer.currentSongTitle}'),
+          title: Text(_musicPlayer.currentSongTitle),
         ),
         body: Column(
           children: <Widget>[
             Expanded(
-              child: ValueListenableBuilder(
-                valueListenable: _musicPlayer,
-                builder: (context, value, child) {
-                  return Container(
-                    width: MediaQuery.of(context).size.width,
-                    padding: const EdgeInsets.all(10),
-                    child: QueryArtworkWidget(
-                      artworkFit: BoxFit.fill,
-                      artworkBorder: BorderRadius.circular(0),
-                      artworkQuality: FilterQuality.high,
-                      keepOldArtwork: true,
-                      id: _musicPlayer.currentSongID,
-                      type: ArtworkType.AUDIO,
-                      nullArtworkWidget: const Icon(Icons.image_not_supported,
-                          size: 120, color: Colors.grey),
-                    ),
-                  );
-                },
+              child: ChangeNotifierProvider(
+                create: (_) => _musicPlayer,
+                child: Consumer<MusicPlayer>(
+                  builder: (context, value, child) {
+                    return Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.all(10),
+                      child: QueryArtworkWidget(
+                        artworkFit: BoxFit.fill,
+                        artworkBorder: BorderRadius.circular(0),
+                        artworkQuality: FilterQuality.high,
+                        keepOldArtwork: true,
+                        id: _musicPlayer.currentSongID,
+                        type: ArtworkType.AUDIO,
+                        nullArtworkWidget: const Icon(Icons.image_not_supported,
+                            size: 120, color: Colors.grey),
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
             Expanded(
-              child: ValueListenableBuilder(
-                valueListenable: _musicPlayer,
-                builder: (context, value, child) {
-                  return Column(
-                    children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 1.5,
-                        height: 30,
-                        child: Center(
-                          child: _buildComplexMarquee(
-                              _musicPlayer.currentSongTitle),
+              child: ChangeNotifierProvider(
+                create: (_) => _musicPlayer,
+                child: Consumer<MusicPlayer>(
+                  builder: (context, valueChange, child) {
+                    return Column(
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width / 1.5,
+                          height: 30,
+                          child: Center(
+                            child: _buildComplexMarquee(
+                                valueChange.currentSongTitle),
+                          ),
                         ),
-                      ),
-                      Slider(
-                        value: _musicPlayer.PositionSlider(),
-                        max: _musicPlayer.DurationSlider() + 0.0,
-                        onChanged: (value) {
-                          setState(() {
-                            player.seek(Duration(seconds: value.toInt()));
-                          });
-                        },
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 15, right: 15),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        Slider(
+                          value: valueChange.PositionSlider(),
+                          max: valueChange.DurationSlider() + 0.0,
+                          onChanged: (value) {
+                            setState(() {
+                              player.seek(Duration(seconds: value.toInt()));
+                            });
+                          },
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15, right: 15),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(FormatTime(valueChange.Positions())),
+                              Text(FormatTime(valueChange.Durations()!)),
+                            ],
+                          ),
+                        ),
+                        Column(
                           children: [
-                            Text(FormatTime(_musicPlayer.Positions())),
-                            Text(FormatTime(_musicPlayer.Durations()!)),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: AudioControlTwo(context, volume),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: AudioControl(context),
+                            ),
                           ],
                         ),
-                      ),
-                      Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: AudioControlTwo(context, volume),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: AudioControl(context),
-                          ),
-                        ],
-                      ),
-                    ],
-                  );
-                },
+                      ],
+                    );
+                  },
+                ),
               ),
             ),
           ],
