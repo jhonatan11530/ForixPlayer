@@ -1,4 +1,5 @@
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MusicLocal {
   final OnAudioQuery _audioQuery = OnAudioQuery();
@@ -20,6 +21,7 @@ class MusicLocal {
       ignoreCase: true,
     );
   }
+
   Future<List<ArtistModel>> AllSongsArtists() async {
     return await _audioQuery.queryArtists();
   }
@@ -42,3 +44,4 @@ class MusicLocal {
     return "Artista";
   }
 }
+

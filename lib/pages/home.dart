@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:forixplayer/Providers/ChangeTheme.dart';
+import 'package:forixplayer/class/SeachMusic.dart';
 import 'package:forixplayer/pages/WidgetMusic/MusicHome.dart';
 import 'package:forixplayer/pages/WidgetMusicLocal/DraggableScrollableLocalMusic.dart';
 import 'package:forixplayer/pages/WidgetMusicLocal/DraggableScrollableLocalMusicAlbum.dart';
 import 'package:forixplayer/pages/WidgetMusicLocal/DraggableScrollableLocalMusicArtis.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -26,6 +28,20 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     _getGreeting();
+    prefe();
+  }
+
+  saveprefe(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool("asd", value);
+  }
+
+  prefe() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      prefs.getBool("asd") ?? false;
+      print("verdadero");
+    });
   }
 
   void _getGreeting() {
@@ -72,6 +88,7 @@ class _HomeState extends State<Home> {
                   child: const Text("Principal"),
                   onPressed: () {
                     setState(() {
+                      saveprefe(true);
                       _isSheetOpenHome = true;
                       _isSheetOpen = false;
                       _isSheetOpenAlbum = false;

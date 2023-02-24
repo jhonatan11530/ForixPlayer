@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:forixplayer/Providers/ChangeTheme.dart';
 import 'package:forixplayer/Providers/MusicPlayer.dart';
+import 'package:forixplayer/class/SeachMusic.dart';
 import 'package:forixplayer/pages/home.dart';
 import 'package:forixplayer/pages/library.dart';
 import 'package:forixplayer/pages/settings.dart';
@@ -57,6 +58,7 @@ class _ForixPlayerState extends State<ForixPlayer> {
         await themeChangeProvider.darkThemePreferences.getTheme();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -64,6 +66,7 @@ class _ForixPlayerState extends State<ForixPlayer> {
           ChangeNotifierProvider(create: (value) {
             return themeChangeProvider;
           }),
+          
         ],
         child: Consumer<ChangeTheme>(
           builder: (context, Theme, child) {

@@ -5,7 +5,7 @@ import 'package:on_audio_query/on_audio_query.dart';
 
 class DraggableScrollableLocalMusicAlbum extends StatelessWidget {
   final MusicLocal _musicLocal = MusicLocal();
-
+  
   DraggableScrollableLocalMusicAlbum({super.key});
 
   @override
