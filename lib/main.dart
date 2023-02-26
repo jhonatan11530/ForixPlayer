@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:forixplayer/Providers/ChangeReplay.dart';
 import 'package:forixplayer/Providers/ChangeTheme.dart';
 import 'package:forixplayer/Providers/MusicPlayer.dart';
-import 'package:forixplayer/class/SeachMusic.dart';
 import 'package:forixplayer/pages/home.dart';
 import 'package:forixplayer/pages/library.dart';
 import 'package:forixplayer/pages/settings.dart';
@@ -37,9 +37,10 @@ class ForixPlayer extends StatefulWidget {
 
 class _ForixPlayerState extends State<ForixPlayer> {
   ChangeTheme themeChangeProvider = ChangeTheme();
+  ChangeReplay _preferences = ChangeReplay();
   final OnAudioQuery _audioQuery = OnAudioQuery();
   final List<Widget> _pages = [
-    const Home(),
+     Home(),
     const Biblioteca(),
     const Settings(),
     const Settings()
@@ -50,7 +51,10 @@ class _ForixPlayerState extends State<ForixPlayer> {
   void initState() {
     super.initState();
     requestStoragePermission();
+
     getCurrentAppTheme();
+    
+    getReplayMusic();
   }
 
   void getCurrentAppTheme() async {
@@ -58,6 +62,9 @@ class _ForixPlayerState extends State<ForixPlayer> {
         await themeChangeProvider.darkThemePreferences.getTheme();
   }
 
+  void getReplayMusic() async {
+    _preferences.isReplay = await _preferences.reproductor.getReplay();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +73,9 @@ class _ForixPlayerState extends State<ForixPlayer> {
           ChangeNotifierProvider(create: (value) {
             return themeChangeProvider;
           }),
-          
+          ChangeNotifierProvider(create: (value) {
+            return _preferences;
+          }),
         ],
         child: Consumer<ChangeTheme>(
           builder: (context, Theme, child) {

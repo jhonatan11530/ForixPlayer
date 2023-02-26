@@ -1,5 +1,4 @@
 import 'package:on_audio_query/on_audio_query.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class MusicLocal {
   final OnAudioQuery _audioQuery = OnAudioQuery();
@@ -44,4 +43,3 @@ class MusicLocal {
     return "Artista";
   }
 }
-

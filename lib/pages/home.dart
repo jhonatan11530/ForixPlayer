@@ -1,47 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:forixplayer/Preferences/DarkThemePreferences.dart';
+import 'package:forixplayer/Providers/ChangeReplay.dart';
 import 'package:forixplayer/Providers/ChangeTheme.dart';
-import 'package:forixplayer/class/SeachMusic.dart';
 import 'package:forixplayer/pages/WidgetMusic/MusicHome.dart';
 import 'package:forixplayer/pages/WidgetMusicLocal/DraggableScrollableLocalMusic.dart';
 import 'package:forixplayer/pages/WidgetMusicLocal/DraggableScrollableLocalMusicAlbum.dart';
 import 'package:forixplayer/pages/WidgetMusicLocal/DraggableScrollableLocalMusicArtis.dart';
+import 'package:forixplayer/pages/WidgetMusicLocal/Reproductor/Reproductor.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  List<SongModel> _music = [];
+  int _index = 0;
+  bool _isSheetOpenHome = false,
+      _isSheetOpenMusic = false,
+      _isSheetOpenAlbum = false,
+      _isSheetOpenArtist = false;
+
+  List<SongModel> get music => _music;
+  set music(List<SongModel> value) => _music = value;
+
+  int get index => _index;
+  set index(int value) => _index = value;
+
+//--------------------------- // -----------------------//
+
+  bool get isSheetOpenHome => _isSheetOpenHome;
+  set isSheetOpenHome(bool value) => _isSheetOpenHome = value;
+
+  bool get isSheetOpenMusic => _isSheetOpenMusic;
+  set isSheetOpenMusic(bool value) => _isSheetOpenMusic = value;
+
+  bool get isSheetOpenAlbum => _isSheetOpenAlbum;
+  set isSheetOpenAlbum(bool value) => _isSheetOpenAlbum = value;
+
+  bool get isSheetOpenArtist => _isSheetOpenArtist;
+  set isSheetOpenArtist(bool value) => _isSheetOpenArtist = value;
 
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
+  int reproductorValue = 0;
   List<SongModel> songs = [];
   String _Today = '';
-  bool _isSheetOpenHome = true,
-      _isSheetOpen = false,
-      _isSheetOpenAlbum = false,
-      _isSheetOpenArtist = false;
 
   @override
   void initState() {
     super.initState();
     _getGreeting();
-    prefe();
-  }
 
-  saveprefe(bool value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool("asd", value);
-  }
-
-  prefe() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      prefs.getBool("asd") ?? false;
-      print("verdadero");
-    });
   }
 
   void _getGreeting() {
@@ -58,6 +68,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final themeChangeProvider = Provider.of<ChangeTheme>(context);
+    final ChangeProductor = Provider.of<ChangeReplay>(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: themeChangeProvider.isdarktheme
@@ -88,11 +99,11 @@ class _HomeState extends State<Home> {
                   child: const Text("Principal"),
                   onPressed: () {
                     setState(() {
-                      saveprefe(true);
-                      _isSheetOpenHome = true;
-                      _isSheetOpen = false;
-                      _isSheetOpenAlbum = false;
-                      _isSheetOpenArtist = false;
+                      //ChangeProductor.isReplay = true;
+                      widget.isSheetOpenHome = true;
+                      widget.isSheetOpenMusic = false;
+                      widget.isSheetOpenAlbum = false;
+                      widget.isSheetOpenArtist = false;
                     });
                   },
                 ),
@@ -108,10 +119,10 @@ class _HomeState extends State<Home> {
                   child: const Text("Canciones"),
                   onPressed: () {
                     setState(() {
-                      _isSheetOpenHome = false;
-                      _isSheetOpen = true;
-                      _isSheetOpenAlbum = false;
-                      _isSheetOpenArtist = false;
+                      widget.isSheetOpenHome = false;
+                      widget.isSheetOpenMusic = true;
+                      widget.isSheetOpenAlbum = false;
+                      widget.isSheetOpenArtist = false;
                     });
                   },
                 ),
@@ -127,10 +138,10 @@ class _HomeState extends State<Home> {
                   child: const Text("Álbumes"),
                   onPressed: () {
                     setState(() {
-                      _isSheetOpenHome = false;
-                      _isSheetOpen = false;
-                      _isSheetOpenAlbum = true;
-                      _isSheetOpenArtist = false;
+                      widget.isSheetOpenHome = false;
+                      widget.isSheetOpenMusic = false;
+                      widget.isSheetOpenAlbum = true;
+                      widget.isSheetOpenArtist = false;
                     });
                   },
                 ),
@@ -146,19 +157,24 @@ class _HomeState extends State<Home> {
                   child: const Text("Artistas"),
                   onPressed: () {
                     setState(() {
-                      _isSheetOpenHome = false;
-                      _isSheetOpen = false;
-                      _isSheetOpenAlbum = false;
-                      _isSheetOpenArtist = true;
+                      widget.isSheetOpenHome = false;
+                      widget.isSheetOpenMusic = false;
+                      widget.isSheetOpenAlbum = false;
+                      widget.isSheetOpenArtist = true;
                     });
                   },
                 ),
               ],
             ),
-            if (_isSheetOpenHome) MusicHome(),
-            if (_isSheetOpen) DraggableScrollableLocalMusic(),
-            if (_isSheetOpenAlbum) DraggableScrollableLocalMusicAlbum(),
-            if (_isSheetOpenArtist) DraggableScrollableLocalMusicArtis(),
+            if (ChangeProductor.isReplay)
+              Music(
+                MusicSongs: widget.music,
+                index: widget.index,
+              ),
+            if (widget.isSheetOpenHome) MusicHome(),
+            if (widget.isSheetOpenMusic) DraggableScrollableLocalMusic(),
+            if (widget.isSheetOpenAlbum) DraggableScrollableLocalMusicAlbum(),
+            if (widget.isSheetOpenArtist) DraggableScrollableLocalMusicArtis(),
           ],
         ),
       ),

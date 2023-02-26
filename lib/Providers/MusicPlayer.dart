@@ -5,7 +5,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
-class MusicPlayer extends ChangeNotifier  {
+class MusicPlayer extends ChangeNotifier {
   int currentSongID = 0;
   List<SongModel> songs = [];
   Duration position = Duration.zero;
@@ -29,13 +29,13 @@ class MusicPlayer extends ChangeNotifier  {
   MusicPlayer() {
     _advancedPlayer.playerStateStream.listen((state) async {});
 
-    _advancedPlayer.positionStream.listen((Duration p) {
-      position = p;
+    _advancedPlayer.positionStream.listen((event) {
+      position = event;
       notifyListeners();
     });
 
-    _advancedPlayer.durationStream.listen((d) {
-      duration = d!;
+    _advancedPlayer.durationStream.listen((event) {
+      duration = event!;
       notifyListeners();
     });
 
@@ -73,7 +73,7 @@ class MusicPlayer extends ChangeNotifier  {
   }
 
   DurationSlider() {
-    return duration.inSeconds.toDouble();
+    return duration?.inSeconds.toDouble();
   }
 
   void dispose() {

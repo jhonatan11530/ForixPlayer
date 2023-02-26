@@ -1,30 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:forixplayer/Providers/ChangeReplay.dart';
 import 'package:forixplayer/class/SeachMusic.dart';
 import 'package:forixplayer/pages/WidgetMusicLocal/Reproductor/MusicAlbum.dart';
-import 'package:forixplayer/pages/WidgetMusicLocal/Reproductor/Reproductor.dart';
+import 'package:forixplayer/pages/home.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:provider/provider.dart';
 
 class DraggableScrollableLocalMusic extends StatelessWidget {
   final MusicLocal _musicLocal = MusicLocal();
-
-  DraggableScrollableLocalMusic({super.key});
-
+  final Home home = Home();
 
   @override
   Widget build(BuildContext context) {
+    final ChangeProductor = Provider.of<ChangeReplay>(context);
     return DraggableScrollableSheet(
       minChildSize: 0.0,
       maxChildSize: 0.9,
       initialChildSize: 0.9,
       builder: (context, scrollController) {
         return Container(
-          child: MusicLocalListViewVertical(),
+          child: MusicLocalListViewVertical(ChangeProductor),
         );
       },
     );
   }
 
-  MusicLocalListViewVertical() {
+  MusicLocalListViewVertical(ChangeReplay changeProductor) {
     return FutureBuilder<List<SongModel>>(
       future: _musicLocal.AllSongs(),
       builder: (context, item) {
@@ -57,14 +58,15 @@ class DraggableScrollableLocalMusic extends StatelessWidget {
                         size: 48, color: Colors.grey),
                   ),
                   onTap: () {
-                    /*Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => Music(
-                          MusicSongs: item.data!,
-                          index: index,
-                        ),
-                      ),
-                    );*/
+                    //changeProductor.isReplay = true;
+
+                    //home.music = item.data!;
+                    //home.index = index;
+
+                      home.isSheetOpenHome = false;
+                      home.isSheetOpenMusic = false;
+                      home.isSheetOpenAlbum = true;
+                      home.isSheetOpenArtist = false;
                   },
                 );
               }, childCount: item.data!.length),
@@ -109,6 +111,7 @@ class DraggableScrollableLocalMusic extends StatelessWidget {
                     size: 48, color: Colors.grey),
               ),
               onTap: () {
+                /*
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => Music(
@@ -116,7 +119,7 @@ class DraggableScrollableLocalMusic extends StatelessWidget {
                       index: index,
                     ),
                   ),
-                );
+                );*/
               },
             );
           },

@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:forixplayer/Providers/ChangeTheme.dart';
 import 'package:forixplayer/class/SeachMusic.dart';
@@ -89,7 +87,7 @@ class _MusicAlbumState extends State<MusicAlbum> {
                   overflow: TextOverflow.ellipsis,
                   maxLines: 3,
                   style: const TextStyle(
-                     fontSize: 15, fontWeight: FontWeight.bold),
+                      fontSize: 15, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   '${widget.titleArtist} ${songs[widget.index].artist}',

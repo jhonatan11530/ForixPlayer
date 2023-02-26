@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:forixplayer/Providers/DarkThemePreferences.dart';
+import 'package:forixplayer/Preferences/DarkThemePreferences.dart';
 
 class ChangeTheme with ChangeNotifier {
    DarkThemePreferences darkThemePreferences = DarkThemePreferences();

@@ -5,7 +5,7 @@ import 'package:on_audio_query/on_audio_query.dart';
 
 class DraggableScrollableLocalMusicAlbum extends StatelessWidget {
   final MusicLocal _musicLocal = MusicLocal();
-  
+
   DraggableScrollableLocalMusicAlbum({super.key});
 
   @override
@@ -28,9 +28,7 @@ class DraggableScrollableLocalMusicAlbum extends StatelessWidget {
       builder: (context, item) {
         if (item.data == null) {
           return const SizedBox(
-              width: 100,
-              height: 100,
-              child: CircularProgressIndicator());
+              width: 100, height: 100, child: CircularProgressIndicator());
         }
         if (item.data!.isEmpty) {
           return const Text("Nothing found!");
