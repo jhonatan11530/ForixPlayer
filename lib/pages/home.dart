@@ -11,32 +11,6 @@ import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
-  List<SongModel> _music = [];
-  int _index = 0;
-  bool _isSheetOpenHome = false,
-      _isSheetOpenMusic = false,
-      _isSheetOpenAlbum = false,
-      _isSheetOpenArtist = false;
-
-  List<SongModel> get music => _music;
-  set music(List<SongModel> value) => _music = value;
-
-  int get index => _index;
-  set index(int value) => _index = value;
-
-//--------------------------- // -----------------------//
-
-  bool get isSheetOpenHome => _isSheetOpenHome;
-  set isSheetOpenHome(bool value) => _isSheetOpenHome = value;
-
-  bool get isSheetOpenMusic => _isSheetOpenMusic;
-  set isSheetOpenMusic(bool value) => _isSheetOpenMusic = value;
-
-  bool get isSheetOpenAlbum => _isSheetOpenAlbum;
-  set isSheetOpenAlbum(bool value) => _isSheetOpenAlbum = value;
-
-  bool get isSheetOpenArtist => _isSheetOpenArtist;
-  set isSheetOpenArtist(bool value) => _isSheetOpenArtist = value;
 
   @override
   State<Home> createState() => _HomeState();
@@ -46,6 +20,10 @@ class _HomeState extends State<Home> {
   int reproductorValue = 0;
   List<SongModel> songs = [];
   String _Today = '';
+  bool _isSheetOpenHome = false,
+      _isSheetOpenMusic = false,
+      _isSheetOpenAlbum = false,
+      _isSheetOpenArtist = false;
 
   @override
   void initState() {
@@ -100,10 +78,10 @@ class _HomeState extends State<Home> {
                   onPressed: () {
                     setState(() {
                       //ChangeProductor.isReplay = true;
-                      widget.isSheetOpenHome = true;
-                      widget.isSheetOpenMusic = false;
-                      widget.isSheetOpenAlbum = false;
-                      widget.isSheetOpenArtist = false;
+                      _isSheetOpenHome = true;
+                      _isSheetOpenMusic = false;
+                      _isSheetOpenAlbum = false;
+                      _isSheetOpenArtist = false;
                     });
                   },
                 ),
@@ -119,10 +97,10 @@ class _HomeState extends State<Home> {
                   child: const Text("Canciones"),
                   onPressed: () {
                     setState(() {
-                      widget.isSheetOpenHome = false;
-                      widget.isSheetOpenMusic = true;
-                      widget.isSheetOpenAlbum = false;
-                      widget.isSheetOpenArtist = false;
+                      _isSheetOpenHome = false;
+                      _isSheetOpenMusic = true;
+                      _isSheetOpenAlbum = false;
+                      _isSheetOpenArtist = false;
                     });
                   },
                 ),
@@ -138,10 +116,10 @@ class _HomeState extends State<Home> {
                   child: const Text("Álbumes"),
                   onPressed: () {
                     setState(() {
-                      widget.isSheetOpenHome = false;
-                      widget.isSheetOpenMusic = false;
-                      widget.isSheetOpenAlbum = true;
-                      widget.isSheetOpenArtist = false;
+                      _isSheetOpenHome = false;
+                      _isSheetOpenMusic = false;
+                      _isSheetOpenAlbum = true;
+                      _isSheetOpenArtist = false;
                     });
                   },
                 ),
@@ -157,24 +135,24 @@ class _HomeState extends State<Home> {
                   child: const Text("Artistas"),
                   onPressed: () {
                     setState(() {
-                      widget.isSheetOpenHome = false;
-                      widget.isSheetOpenMusic = false;
-                      widget.isSheetOpenAlbum = false;
-                      widget.isSheetOpenArtist = true;
+                      _isSheetOpenHome = false;
+                      _isSheetOpenMusic = false;
+                      _isSheetOpenAlbum = false;
+                      _isSheetOpenArtist = true;
                     });
                   },
                 ),
               ],
             ),
-            if (ChangeProductor.isReplay)
+            /*if (ChangeProductor.isReplay)
               Music(
-                MusicSongs: widget.music,
-                index: widget.index,
-              ),
-            if (widget.isSheetOpenHome) MusicHome(),
-            if (widget.isSheetOpenMusic) DraggableScrollableLocalMusic(),
-            if (widget.isSheetOpenAlbum) DraggableScrollableLocalMusicAlbum(),
-            if (widget.isSheetOpenArtist) DraggableScrollableLocalMusicArtis(),
+                MusicSongs: music,
+                index: index,
+              ),*/
+            if (_isSheetOpenHome) MusicHome(),
+            if (_isSheetOpenMusic) DraggableScrollableLocalMusic(),
+            if (_isSheetOpenAlbum) DraggableScrollableLocalMusicAlbum(),
+            if (_isSheetOpenArtist) DraggableScrollableLocalMusicArtis(),
           ],
         ),
       ),

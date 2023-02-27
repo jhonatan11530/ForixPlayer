@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:forixplayer/Providers/ChangeReplay.dart';
 import 'package:forixplayer/class/SeachMusic.dart';
 import 'package:forixplayer/pages/WidgetMusicLocal/Reproductor/MusicAlbum.dart';
-import 'package:forixplayer/pages/home.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 
 class DraggableScrollableLocalMusic extends StatelessWidget {
   final MusicLocal _musicLocal = MusicLocal();
-  final Home home = Home();
 
   @override
   Widget build(BuildContext context) {
@@ -63,10 +61,6 @@ class DraggableScrollableLocalMusic extends StatelessWidget {
                     //home.music = item.data!;
                     //home.index = index;
 
-                      home.isSheetOpenHome = false;
-                      home.isSheetOpenMusic = false;
-                      home.isSheetOpenAlbum = true;
-                      home.isSheetOpenArtist = false;
                   },
                 );
               }, childCount: item.data!.length),
